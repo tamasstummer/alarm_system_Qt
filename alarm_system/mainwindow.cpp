@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    Alarm myAlarm;
+
     //myAlarm.AvailablePorts();
 
 
@@ -27,3 +27,9 @@ MainWindow::~MainWindow()
 
 
 
+
+void MainWindow::on_pushButton_clicked()
+{
+    myAlarm.AvailablePorts();
+    myAlarm.ConnectToTheDevice();
+}
