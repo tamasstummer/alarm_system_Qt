@@ -11,17 +11,24 @@ class Alarm{
 public:
     Alarm();
     ~Alarm();
-    void AvailablePorts(void);
-    void ConnectToTheDevice(void);
+    bool CheckPort(QString);
+    void ConnectToTheDevice(QString);
+    QString GetPassword(void);
+    QString GetPortName(void);
+
+
 
 
 private:
-    static const int password = 1234;
+    const QString password = "1234";
     const int VendorID = 6790;
     const int ProductID = 29987;
-    QString PortName;
-    bool isAvailable;
+    QString PortName;  // COM port name
+    bool isAvailable;  // indicate if the COM port is available or not
     QSerialPort Communication;
+    QVector<double> humidityAndTemperature;
+    QString log;
+
 
 
 };
