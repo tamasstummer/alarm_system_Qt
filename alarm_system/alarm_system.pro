@@ -18,11 +18,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     alarm.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    mytimer.cpp
 
 HEADERS += \
     alarm.h \
-    mainwindow.h
+    mainwindow.h \
+    mytimer.h
 
 FORMS += \
     mainwindow.ui

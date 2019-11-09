@@ -5,6 +5,7 @@
 #include <QtWidgets>
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include "mytimer.h"
 
 
 Alarm::Alarm()
@@ -62,26 +63,55 @@ bool Alarm::CheckPort(QString comport)
             }
 
         }
+        return false;
 
     }
 
 }
 
 
-void Alarm::ConnectToTheDevice(QString comport)
+bool Alarm::ConnectToTheDevice(QString comport)
 {
     if(this->isAvailable == true)
     {
-        this->Communication.setPortName(comport);
-        this->Communication.open(QSerialPort::ReadWrite);
-        this->Communication.setBaudRate(QSerialPort::Baud9600);
-        this->Communication.setDataBits(QSerialPort::Data7);
-        this->Communication.setParity(QSerialPort::NoParity);
-        this->Communication.setStopBits(QSerialPort::OneStop);
-        this->Communication.setFlowControl(QSerialPort::NoFlowControl);
+       bool isThereAnyError = false;
+
+       this->Communication.setPortName(comport);
+       if(! this->Communication.open(QSerialPort::ReadWrite))               {isThereAnyError = true; qDebug() << " eror during open serial port";}
+       if(! this->Communication.setBaudRate(QSerialPort::Baud9600))         {isThereAnyError = true;qDebug() << "error during setting baud";}
+       if(! this->Communication.setDataBits(QSerialPort::Data7))            {isThereAnyError = true;qDebug() << "error during setting data7";}
+       if(! this->Communication.setParity(QSerialPort::NoParity))           {isThereAnyError = true;qDebug() << "error during setting no parity";}
+       if(! this->Communication.setStopBits(QSerialPort::OneStop))          {isThereAnyError = true;qDebug() << "error during setting opne stop";}
+       if(! this->Communication.setFlowControl(QSerialPort::NoFlowControl)) {isThereAnyError = true;qDebug() << "error during setting non folw control";}
+           if(isThereAnyError == true)
+           {
+               return false;
+           }
+           else {return true;}
+    }
+    else
+    {
+        qDebug() << "there is no available device" << endl;
+
     }
 
 }
+
+
+
+void Alarm::ReadSerialData(void)
+{
+
+
+QByteArray serialData = this->Communication.readLine();
+QString data = QString::fromStdString(serialData.toStdString());
+qDebug() << data << endl;
+
+
+
+}
+
+
 
 QString Alarm::GetPassword()
 {

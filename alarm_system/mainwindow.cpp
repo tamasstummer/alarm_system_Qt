@@ -6,6 +6,7 @@
 #include <alarm.h>
 #include <QMessageBox>
 #include <QPixmap>
+#include "mytimer.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -13,8 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-
 
     foreach(QSerialPortInfo port, QSerialPortInfo::availablePorts()) {
             ui->comboBox_COM_Port->addItem(port.portName());
@@ -96,10 +95,14 @@ void MainWindow::on_buttonConnect_clicked()
     bool isAvailable = myAlarm.CheckPort(selectedComPort);
     if(isAvailable == true)
     {
-        myAlarm.ConnectToTheDevice(myAlarm.GetPortName());
 
+        bool status = myAlarm.ConnectToTheDevice(myAlarm.GetPortName());
+        if(status == true)
+        {
 
+           mTimer.startTimer(1000);
+           qDebug() << "start the fricken timer" << endl;
 
+        }
     }
-
 }
