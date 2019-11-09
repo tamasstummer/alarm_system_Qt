@@ -55,15 +55,18 @@ void Alarm::batteryMeasure(void)
 void Alarm::PrintOutStatus(void)
 {
 
-   Serial.print("\nBattery is ");
-   Serial.print(this->batteryCapaity);
-   Serial.print("\nIs armed: ");
-   Serial.print(this->isArmed);
-   Serial.print("\nTemperature: ");
-   Serial.print(this->temperature);
-   Serial.print("\nHumidity: ");
-   Serial.print(this->humidity);
-   Serial.print("*------------------------------------*");
+Serial.println("hello");
+Serial.flush();
+
+//   Serial.print("\nBattery is ");
+//   Serial.print(this->batteryCapaity);
+//   Serial.print("\nIs armed: ");
+//   Serial.print(this->isArmed);
+//   Serial.print("\nTemperature: ");
+//   Serial.print(this->temperature);
+//   Serial.print("\nHumidity: ");
+//   Serial.print(this->humidity);
+//   Serial.println("*------------------------------------*");
    
   
 }

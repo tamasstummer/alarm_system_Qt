@@ -6,15 +6,25 @@
 
 
 
-class Alarm{
+
+
+class Alarm: public QObject
+{
+
+    Q_OBJECT
 
 public:
     Alarm();
     ~Alarm();
     bool CheckPort(QString);
-    void ConnectToTheDevice(QString);
+    bool ConnectToTheDevice(QString);
     QString GetPassword(void);
     QString GetPortName(void);
+
+
+public slots:
+    void ReadSerialData();
+
 
 
 
@@ -28,6 +38,7 @@ private:
     QSerialPort Communication;
     QVector<double> humidityAndTemperature;
     QString log;
+
 
 
 
