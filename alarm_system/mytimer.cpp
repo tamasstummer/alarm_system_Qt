@@ -1,10 +1,17 @@
 #include "mytimer.h"
+#include "mainwindow.h"
+#include "alarm.h"
 
 #include <QtCore>
 #include <QDebug>
 
-MyTimer::MyTimer()
+
+
+
+MyTimer::MyTimer(Alarm* gettedAlarm)
 {
+
+    this->alarm = gettedAlarm;
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(TimerSlot()));
 }
@@ -24,9 +31,7 @@ void MyTimer::stopTimer(void)
 
 void MyTimer::TimerSlot()
 {
-
- qDebug() << "timer works" << endl;
-
-
+   QString command = this->alarm->commands[this->alarm->commandNum];
+   MainWindow().mSerial->SendData(command, this->alarm);
 
 }

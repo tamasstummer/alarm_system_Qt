@@ -7,7 +7,10 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include "mytimer.h"
+#include "myserial.h"
 
+
+#define time_interval_ms 1000
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -34,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    mSerial->serialport->close();
 }
 
 
@@ -52,10 +56,6 @@ void MainWindow::on_buttonPasswordOK_clicked()
         ui->label_2->setPixmap(pm);
         ui->label_2->setScaledContents(true);
 
-
-
-
-
     }
     else
     {
@@ -64,8 +64,6 @@ void MainWindow::on_buttonPasswordOK_clicked()
         ui->text_Password->setText("");
 
     }
-
-
 
 }
 
@@ -92,17 +90,19 @@ void MainWindow::on_buttonConnect_clicked()
 
     QString selectedComPort = ui->comboBox_COM_Port->currentText();
     qDebug() << "Selected COM Port: " << selectedComPort << endl;
-    bool isAvailable = myAlarm.CheckPort(selectedComPort);
+    bool isAvailable =mSerial->CheckPort(selectedComPort, &myAlarm);
     if(isAvailable == true)
     {
 
-        bool status = myAlarm.ConnectToTheDevice(myAlarm.GetPortName());
+        bool status = mSerial->ConnectToTheDevice(selectedComPort, &myAlarm);
         if(status == true)
         {
 
-           mTimer.startTimer(1000);
-           qDebug() << "start the fricken timer" << endl;
+           mTimer->startTimer(time_interval_ms);
+           //qDebug() << "start the timer" << endl;
 
         }
     }
 }
+
+

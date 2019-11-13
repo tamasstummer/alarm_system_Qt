@@ -16,28 +16,27 @@ class Alarm: public QObject
 public:
     Alarm();
     ~Alarm();
-    bool CheckPort(QString);
-    bool ConnectToTheDevice(QString);
+
+    const int VendorID = 6790;
+    const int ProductID = 29987;
+
+
     QString GetPassword(void);
     QString GetPortName(void);
-
-
-public slots:
-    void ReadSerialData();
-
-
-
-
+    bool GetIsAvailable(void);
+    void SetPortName(QString);
+    void SetIsAvailable(bool);
+    const QString commands[2] = {"ALARM0","ALARM1"};    // ALARM0 disarm the system, ALARM1 arm the system
+    int commandNum;
 
 private:
     const QString password = "1234";
-    const int VendorID = 6790;
-    const int ProductID = 29987;
     QString PortName;  // COM port name
     bool isAvailable;  // indicate if the COM port is available or not
-    QSerialPort Communication;
     QVector<double> humidityAndTemperature;
     QString log;
+
+
 
 
 

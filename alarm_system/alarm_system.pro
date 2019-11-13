@@ -19,11 +19,13 @@ SOURCES += \
     alarm.cpp \
     main.cpp \
     mainwindow.cpp \
+    myserial.cpp \
     mytimer.cpp
 
 HEADERS += \
     alarm.h \
     mainwindow.h \
+    myserial.h \
     mytimer.h
 
 FORMS += \

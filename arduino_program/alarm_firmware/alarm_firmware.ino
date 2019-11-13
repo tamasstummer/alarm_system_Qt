@@ -2,7 +2,6 @@
 #include "DHT.h"
 
 
-
 #define RedLed  11
 #define GreenLed 12
 #define DHTPIN 2  
@@ -15,22 +14,22 @@
 DHT dht(DHTPIN, DHTTYPE);
 
 
-
 class Alarm
 {
 
   public:
-    const char password[10] = "asd";
     int batteryCapaity;
     bool isArmed;
     int temperature;
     int humidity;
+    bool relayStatus;
     
   public: 
-      Alarm(void);
+      Alarm();
       void batteryMeasure(void);
       void enableBuzzer(bool);
       void MeasureTempAndHumid(void);
+      void MeasureReedRelayStatus(void);
       void PrintOutStatus(void);
   
   
@@ -42,7 +41,16 @@ Alarm::Alarm()
   this->isArmed = false;
   this->MeasureTempAndHumid();
   this->batteryMeasure();
+  this->MeasureReedRelayStatus();
+  
    
+}
+
+
+void Alarm::MeasureReedRelayStatus(void)
+{
+  
+  this->relayStatus = digitalRead(ReedRelay);
 }
 
 void Alarm::batteryMeasure(void)
@@ -55,18 +63,15 @@ void Alarm::batteryMeasure(void)
 void Alarm::PrintOutStatus(void)
 {
 
-Serial.println("hello");
-Serial.flush();
-
-//   Serial.print("\nBattery is ");
+   Serial.print("Bat");
 //   Serial.print(this->batteryCapaity);
-//   Serial.print("\nIs armed: ");
+//   Serial.print("armed");
 //   Serial.print(this->isArmed);
-//   Serial.print("\nTemperature: ");
+//   Serial.print("Temp");
 //   Serial.print(this->temperature);
-//   Serial.print("\nHumidity: ");
-//   Serial.print(this->humidity);
-//   Serial.println("*------------------------------------*");
+//   Serial.print("Humid");
+//   Serial.println(this->humidity);
+   //Serial.flush();
    
   
 }
@@ -100,7 +105,7 @@ void Alarm::MeasureTempAndHumid()
   
       // Check if any reads failed and exit early (to try again).
     if (isnan(humidity) || isnan(temperature) ) {
-      Serial.println(F("Failed to read from DHT sensor!"));
+     // Serial.println("Failed to read from DHT sensor!");
       return;
     }
     else
@@ -118,6 +123,7 @@ void Alarm::MeasureTempAndHumid()
 Alarm alarm;
 
 
+
 void setup() {
     // put your setup code here, to run once:
   pinMode(RedLed, OUTPUT);
@@ -126,7 +132,7 @@ void setup() {
   pinMode(ReedRelay, INPUT);
   pinMode(Battery, INPUT);
   analogWrite(Buzzer, 128);
-  digitalWrite(RedLed, HIGH);
+  digitalWrite(RedLed, LOW);
   digitalWrite(GreenLed, LOW);
   Serial.begin(9600);
   dht.begin();
@@ -135,24 +141,18 @@ void setup() {
 
 void loop() {
 alarm.PrintOutStatus();
-alarm.batteryMeasure();
-alarm.MeasureTempAndHumid();
-if(alarm.batteryCapaity > 500)
-{
-  alarm.enableBuzzer(true);
-}
-else
-{
-  alarm.enableBuzzer(false);
-  
-  }
+//alarm.batteryMeasure();
+//alarm.MeasureTempAndHumid();
+//alarm.MeasureReedRelayStatus();
+
+
 
 
 
 //digitalWrite(RedLed, !digitalRead(RedLed)) ;
 //digitalWrite(GreenLed, !digitalRead(GreenLed)) ;
 //enableBuzzer(digitalRead(RedLed));
-delay(1000);
 
+delay(3000);
 
 }
