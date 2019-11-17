@@ -6,6 +6,8 @@
 #include <alarm.h>
 #include <QMessageBox>
 #include <QPixmap>
+#include <iostream>
+#include <cstdlib>
 #include "mytimer.h"
 #include "myserial.h"
 
@@ -35,6 +37,21 @@ MainWindow::MainWindow(QWidget *parent)
         ui->label_2->setPixmap(pm);
         ui->label_2->setScaledContents(true);
 }
+
+
+void MainWindow::fillMyAlarmForDevelopment()
+{
+
+    myAlarm.SetBattery((std::rand()%10)*10);
+    QVector<int> datas = {(std::rand()%50),(std::rand()%50)};
+    myAlarm.SetHumidityAndTemperature(datas);
+    emit myAlarm.updatedDataFormSerial();
+
+
+
+}
+
+
 
 void MainWindow::updateWindowAfterSAtatusChanged()
 {
@@ -114,6 +131,13 @@ void MainWindow::on_buttonPasswordOK_clicked()
         ui->label_2->setPixmap(pm);
         ui->label_2->setScaledContents(true);
         ui->statusWindow->setEnabled(true);
+        if(ui->isDeveloper->isChecked() == true )
+        {
+            connect(developerTimer->timer, SIGNAL(timeout()), this, SLOT(fillMyAlarmForDevelopment())  );
+            developerTimer->startTimer(time_interval_ms);
+
+        }
+
 
     }
     else

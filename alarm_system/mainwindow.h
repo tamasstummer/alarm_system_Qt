@@ -28,6 +28,7 @@ public:
    Alarm myAlarm;
    MyTimer *mTimer = new MyTimer();
    mySerial *mSerial = new mySerial();
+   MyTimer *developerTimer = new MyTimer();
 
 
 
@@ -37,6 +38,7 @@ private slots:
 
    void updateWindowAfterSAtatusChanged();
 
+   void fillMyAlarmForDevelopment();
 
     void on_buttonPasswordOK_clicked();
 
