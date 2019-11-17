@@ -35,6 +35,7 @@ private slots:
 
    void processSerialData(QString );
 
+   void updateWindowAfterSAtatusChanged();
 
 
     void on_buttonPasswordOK_clicked();

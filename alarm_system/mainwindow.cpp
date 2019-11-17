@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     connect(mSerial, SIGNAL(gotCommand(QString)), this, SLOT(processSerialData(QString)));
     connect(mTimer->timer, SIGNAL(timeout()), mSerial, SLOT(sendStatusCommand()));
+    connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(updateWindowAfterSAtatusChanged()));
 
     this->developerOption = ui->isDeveloper->isChecked();
 
@@ -35,7 +36,17 @@ MainWindow::MainWindow(QWidget *parent)
         ui->label_2->setScaledContents(true);
 }
 
+void MainWindow::updateWindowAfterSAtatusChanged()
+{
 
+    ui->logWindow->moveCursor(QTextCursor::End);
+    ui->logWindow->append(myAlarm.GetLog());
+    ui->logWindow->moveCursor(QTextCursor::End);
+    ui->lcdBatteryStatus->display(myAlarm.GetBattery());
+    QVector<int> humidAndTemp = myAlarm.GetHumidityAndTemperature();
+    ui->lcdTempStatus->display(humidAndTemp[1]);
+    ui->lcdHmidStatus->display(humidAndTemp[0]);
+}
 
 void MainWindow::processSerialData(QString command)
 {
@@ -44,6 +55,8 @@ void MainWindow::processSerialData(QString command)
     int humidityValue;
     int temperatureValue;
     int relayValue;
+    QVector<int> humidAndTemp;
+    QString logMessage;
 
 
         qDebug() << command <<endl;
@@ -56,13 +69,20 @@ void MainWindow::processSerialData(QString command)
             humidityValue = (c_command[6] - '0')*10 + (c_command[7] - '0');
             temperatureValue = (c_command[3] - '0')*10 + (c_command[4] - '0');
             relayValue = ((c_command[9] - '0') == 0) ? false : true;
-
-            myAlarm.SetHumidityAndTemperature(humidityValue, temperatureValue);
+            humidAndTemp = {humidityValue, temperatureValue};
+            logMessage.append("Battery: ");
+            logMessage.append(QString::number(batteryValue*10));
+            logMessage.append("%  Humidity: ");
+            logMessage.append(QString::number(humidityValue));
+            logMessage.append("%  Temp: ");
+            logMessage.append(QString::number(temperatureValue));
+            logMessage.append("C  Relay: ");
+            logMessage.append(QString::number(relayValue));
+            myAlarm.SetHumidityAndTemperature(humidAndTemp);
             myAlarm.SetBattery(batteryValue);
             myAlarm.SetRelay(relayValue);
-            myAlarm.SetLog(command);
-
-            //TODO itt kéne emittálni egy jelet, hogy ki lehet írni az adatokat a mainwindow-ra
+            myAlarm.SetLog(logMessage);
+            emit myAlarm.updatedDataFormSerial();
         }
 
 

@@ -47,7 +47,7 @@
      <rect>
       <x>30</x>
       <y>220</y>
-      <width>441</width>
+      <width>561</width>
       <height>401</height>
      </rect>
     </property>
@@ -116,12 +116,12 @@
       </item>
      </layout>
     </widget>
-    <widget class="QTextEdit" name="textEdit">
+    <widget class="QTextEdit" name="logWindow">
      <property name="geometry">
       <rect>
        <x>210</x>
        <y>70</y>
-       <width>191</width>
+       <width>341</width>
        <height>311</height>
       </rect>
      </property>
@@ -288,9 +288,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>480</x>
+      <x>650</x>
       <y>50</y>
-      <width>731</width>
+      <width>461</width>
       <height>471</height>
      </rect>
     </property>
@@ -303,58 +303,10 @@
     <property name="title">
      <string>Status window</string>
     </property>
-    <widget class="QPushButton" name="alarmStatus">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>121</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(200, 200, 200);</string>
-     </property>
-     <property name="text">
-      <string>Get alarm status</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="tempStatus">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>121</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(200, 200, 200);</string>
-     </property>
-     <property name="text">
-      <string>Get temperature</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="battStatus">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>121</width>
-       <height>28</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(200, 200, 200);</string>
-     </property>
-     <property name="text">
-      <string>Get battery status</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="alarmPlot">
      <property name="geometry">
       <rect>
-       <x>280</x>
+       <x>290</x>
        <y>70</y>
        <width>141</width>
        <height>28</height>
@@ -370,8 +322,8 @@
     <widget class="QPushButton" name="tempPlot">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>70</y>
+       <x>290</x>
+       <y>10</y>
        <width>141</width>
        <height>28</height>
       </rect>
@@ -386,8 +338,8 @@
     <widget class="QPushButton" name="battPlot">
      <property name="geometry">
       <rect>
-       <x>580</x>
-       <y>70</y>
+       <x>290</x>
+       <y>40</y>
        <width>141</width>
        <height>28</height>
       </rect>
@@ -399,12 +351,25 @@
       <string>Plot battery status</string>
      </property>
     </widget>
-    <widget class="QLCDNumber" name="lcdAlarmStatus">
+    <widget class="QLCDNumber" name="lcdBatteryStatus">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>120</x>
        <y>20</y>
-       <width>81</width>
+       <width>71</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+    </widget>
+    <widget class="QLCDNumber" name="lcdHmidStatus">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>60</y>
+       <width>71</width>
        <height>31</height>
       </rect>
      </property>
@@ -415,22 +380,9 @@
     <widget class="QLCDNumber" name="lcdTempStatus">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>60</y>
-       <width>81</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
-    </widget>
-    <widget class="QLCDNumber" name="lcdBattStatus">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
+       <x>120</x>
        <y>100</y>
-       <width>81</width>
+       <width>71</width>
        <height>31</height>
       </rect>
      </property>
@@ -441,9 +393,9 @@
     <widget class="QGraphicsView" name="plotArea">
      <property name="geometry">
       <rect>
-       <x>15</x>
+       <x>35</x>
        <y>141</y>
-       <width>701</width>
+       <width>401</width>
        <height>311</height>
       </rect>
      </property>
@@ -454,7 +406,7 @@
     <widget class="QSlider" name="timeSlide">
      <property name="geometry">
       <rect>
-       <x>430</x>
+       <x>290</x>
        <y>110</y>
        <width>141</width>
        <height>22</height>
@@ -477,9 +429,9 @@ background-color: rgb(255, 255, 255);</string>
     <widget class="QLabel" name="label_10">
      <property name="geometry">
       <rect>
-       <x>330</x>
+       <x>200</x>
        <y>110</y>
-       <width>101</width>
+       <width>81</width>
        <height>20</height>
       </rect>
      </property>
@@ -487,11 +439,50 @@ background-color: rgb(255, 255, 255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ffffff;&quot;&gt;TimeScale:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ffffff;&quot;&gt;Battery:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ffffff;&quot;&gt;Humidity:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ffffff;&quot;&gt;Temperature:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>690</x>
       <y>10</y>
       <width>181</width>
       <height>49</height>

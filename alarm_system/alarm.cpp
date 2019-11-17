@@ -3,6 +3,8 @@
 #include <QSerialPortInfo>
 #include <QDebug>
 #include <QtWidgets>
+#include <QVector>
+#include <iostream>
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 #include "mytimer.h"
@@ -40,25 +42,19 @@ bool Alarm::GetIsAvailable(void)
 
 }
 
-void Alarm::SetHumidityAndTemperature(int temperature, int humidity)
+void Alarm::SetHumidityAndTemperature(QVector<int> datas)
 {
-    this->humidityAndTemperature[0] = humidity;
-    this->humidityAndTemperature[1] = temperature;
+    this->humidityAndTemperature = datas;
 }
 
-int Alarm::GetHumidity()
+QVector<int> Alarm::GetHumidityAndTemperature()
 {
 
-    return this->humidityAndTemperature[0];
+    return this->humidityAndTemperature;
 
 }
 
 
-int Alarm::GetTemperature()
-{
-
-    return this->humidityAndTemperature[1];
-}
 
 
 
@@ -73,3 +69,41 @@ QString Alarm::GetPortName()
     return this->PortName;
 
 }
+
+void Alarm::SetLog(QString log)
+{
+    this->log = log;
+
+}
+QString Alarm::GetLog(void)
+{
+
+    return this->log;
+
+}
+void Alarm::SetBattery(int value)
+{
+    this->battery = value;
+
+}
+int Alarm::GetBattery(void)
+{
+    return this->battery;
+}
+void Alarm::SetRelay(bool status)
+{
+    this->relay = status;
+
+}
+bool Alarm::GetRelay(void)
+{
+
+    return this->relay;
+
+}
+
+
+
+
+
+

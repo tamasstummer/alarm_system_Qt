@@ -93,7 +93,7 @@ void mySerial::SendData(const QString command)
 void mySerial::sendStatusCommand()
 {
 
-    qDebug() << "3sec? " << endl;
+
     this->SendData("STATUS");
     this->serialport->waitForReadyRead(2000);
 }

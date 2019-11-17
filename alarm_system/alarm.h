@@ -26,15 +26,24 @@ public:
     bool GetIsAvailable(void);
     void SetPortName(QString);
     void SetIsAvailable(bool);
-    void SetHumidityAndTemperature(int, int);
-    int GetHumidity();
-    int GetTemperature();
+    void SetHumidityAndTemperature(QVector<int>);
+    QVector<int> GetHumidityAndTemperature();
     void SetLog(QString);
+    QString GetLog(void);
+    void SetBattery(int);
+    int GetBattery(void);
+    void SetRelay(bool);
+    bool GetRelay(void);
+
+signals:
+    void updatedDataFormSerial();
 
 private:
     const QString password = "1234";
     QString PortName;  // COM port name
     bool isAvailable;  // indicate if the COM port is available or not
+    int battery;
+    bool relay;
     QVector<int> humidityAndTemperature;
     QString log;
 
