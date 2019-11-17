@@ -26,20 +26,17 @@ public:
     bool GetIsAvailable(void);
     void SetPortName(QString);
     void SetIsAvailable(bool);
-    const QString commands[2] = {"ALARM0","ALARM1"};    // ALARM0 disarm the system, ALARM1 arm the system
-    int commandNum;
+    void SetHumidityAndTemperature(int, int);
+    int GetHumidity();
+    int GetTemperature();
+    void SetLog(QString);
 
 private:
     const QString password = "1234";
     QString PortName;  // COM port name
     bool isAvailable;  // indicate if the COM port is available or not
-    QVector<double> humidityAndTemperature;
+    QVector<int> humidityAndTemperature;
     QString log;
-
-
-
-
-
 
 };
 

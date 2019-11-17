@@ -1,68 +1,66 @@
 #include "myserial.h"
-
-#include <alarm.h>
 #include "mainwindow.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
-#include <QtDebug>
+#include <QDebug>
 #include <QMessageBox>
 
-mySerial::mySerial(Alarm* gettedAlarm)
+mySerial::mySerial()
 {
-    this->alarm = gettedAlarm;
-    serialport = new QSerialPort(this);
-    connect(serialport, SIGNAL(readyRead()), this, SLOT(serialSlot()) );
+    this->serialport = new QSerialPort();
+    QObject::connect(this->serialport, SIGNAL(readyRead()), this, SLOT(readSerial()));
 
-}
-
-void mySerial::serialSlot()
-{
-    qDebug() << "Incoming data" << endl;
-    QByteArray serialData = serialport->readAll();
-    QString data = QString::fromStdString(serialData.toStdString());
-    qDebug() << data << endl;
-    serialport->flush();
 }
 
 
 
-bool mySerial::ConnectToTheDevice(const QString comport, Alarm* alarm)
+
+bool mySerial::ConnectToTheDevice(const QString comport)
 {
-    if(alarm->GetIsAvailable() == true)
-    {
+
        bool isThereAnyError = false;
 
-       serialport->setPortName(comport);
-       if(! serialport->setBaudRate(QSerialPort::Baud9600))         {isThereAnyError = true;qDebug() << "error during setting baud";}
-       if(! serialport->setDataBits(QSerialPort::Data8))            {isThereAnyError = true;qDebug() << "error during setting data7";}
-       if(! serialport->setParity(QSerialPort::NoParity))           {isThereAnyError = true;qDebug() << "error during setting no parity";}
-       if(! serialport->setStopBits(QSerialPort::OneStop))          {isThereAnyError = true;qDebug() << "error during setting opne stop";}
-       if(! serialport->setFlowControl(QSerialPort::NoFlowControl)) {isThereAnyError = true;qDebug() << "error during setting non folw control";}
-       if(! serialport->open(QIODevice::ReadWrite))                 {isThereAnyError = true;qDebug() << "error during open serial port";}
+       this->serialport->setPortName(comport);
+       if(! this->serialport->setBaudRate(QSerialPort::Baud9600))         {isThereAnyError = true;qDebug() << "error during setting baud";}
+       if(! this->serialport->setDataBits(QSerialPort::Data8))            {isThereAnyError = true;qDebug() << "error during setting data7";}
+       if(! this->serialport->setParity(QSerialPort::NoParity))           {isThereAnyError = true;qDebug() << "error during setting no parity";}
+       if(! this->serialport->setStopBits(QSerialPort::OneStop))          {isThereAnyError = true;qDebug() << "error during setting opne stop";}
+       if(! this->serialport->setFlowControl(QSerialPort::NoFlowControl)) {isThereAnyError = true;qDebug() << "error during setting non folw control";}
+       if(! this->serialport->open(QIODevice::ReadWrite))                 {isThereAnyError = true;qDebug() << "error during open serial port";}
 
 
-       if(serialport->isOpen() == true)
-            {qDebug() << "comport open";}
+       if(this->serialport->isOpen() == true)
+            {
+           qDebug() << "comport open";
+            }
 
        else
             {qDebug() << "comport closed";}
 
            if(isThereAnyError == true)
            {
+               qDebug() << "there is no available device" << endl;
                return false;
            }
            else {return true;}
-    }
-    else
-    {
-        qDebug() << "there is no available device" << endl;
-        return false;
 
-    }
 
 }
 
-bool mySerial::CheckPort(QString comport, Alarm * alarm)
+void mySerial::readSerial()
+{
+    qDebug() << "Incoming data: ";
+    QByteArray serialData = this->serialport->readAll();
+    QString data = QString::fromStdString(serialData.toStdString());
+    qDebug() << data << endl;
+    emit gotCommand(data);
+    //serialport->flush();
+}
+
+
+
+
+bool mySerial::CheckPort(QString comport)
 {
 
 
@@ -77,55 +75,27 @@ bool mySerial::CheckPort(QString comport, Alarm * alarm)
 
     }
 
-    else
-    {
-        qDebug() << "The number of available ports: " << NumberOfAvailablePorts << endl;
-        foreach (const QSerialPortInfo &SerialPortInfo, QSerialPortInfo::availablePorts())
-        {
-            if(SerialPortInfo.hasVendorIdentifier() == true && SerialPortInfo.hasProductIdentifier() == true && SerialPortInfo.portName() == comport)
-            {
-                if(SerialPortInfo.vendorIdentifier() == alarm->VendorID && SerialPortInfo.productIdentifier() == alarm->ProductID)
-                {
-                    qDebug() << "Vendor ID: " << SerialPortInfo.vendorIdentifier() << endl << "Product ID: " << SerialPortInfo.productIdentifier() << endl << "COM Port: " << comport << endl;
-                    alarm->SetPortName(comport);
-                    alarm->SetIsAvailable(true);
+    return true;
 
-                    return true;
-
-                }
-
-            }
-
-        }
-        return false;
-
-    }
 
 }
 
-void mySerial::SendData(const QString command, Alarm* alarm)
+void mySerial::SendData(const QString command)
 {
-    if(alarm->GetIsAvailable() == true)
-    {
-        if(serialport ->write(command.toStdString().c_str()) < 0)
-        {
-            qDebug() << serialport->error() << endl;
-            qDebug() << "error string = " << serialport->errorString();
 
-        }
+        serialport ->write(command.toStdString().c_str());
+        qDebug() << "Deata sent" << endl;
 
 
-
-
-    }
-    else
-    {
-        qDebug() << "Error during sending data" << endl;
-
-    }
 }
 
 
+void mySerial::sendStatusCommand()
+{
 
+    qDebug() << "3sec? " << endl;
+    this->SendData("STATUS");
+    this->serialport->waitForReadyRead(2000);
+}
 
 

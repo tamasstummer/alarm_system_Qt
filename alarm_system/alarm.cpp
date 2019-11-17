@@ -11,7 +11,7 @@
 
 Alarm::Alarm()
 {
-this->commandNum = 0;
+
 
 }
 
@@ -38,6 +38,26 @@ bool Alarm::GetIsAvailable(void)
 {
     return this->isAvailable;
 
+}
+
+void Alarm::SetHumidityAndTemperature(int temperature, int humidity)
+{
+    this->humidityAndTemperature[0] = humidity;
+    this->humidityAndTemperature[1] = temperature;
+}
+
+int Alarm::GetHumidity()
+{
+
+    return this->humidityAndTemperature[0];
+
+}
+
+
+int Alarm::GetTemperature()
+{
+
+    return this->humidityAndTemperature[1];
 }
 
 

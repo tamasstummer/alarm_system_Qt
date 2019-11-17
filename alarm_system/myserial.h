@@ -3,7 +3,7 @@
 
 #include <QSerialPort>
 #include <QSerialPortInfo>
-#include <alarm.h>
+
 
 class mySerial: public QObject
 {
@@ -11,21 +11,21 @@ class mySerial: public QObject
     Q_OBJECT
 
 public:
-    mySerial(Alarm*);
-    bool ConnectToTheDevice(const QString, Alarm*);
-    bool CheckPort(QString, Alarm*);
-    void SendData(QString command, Alarm*);
-
+    mySerial();
+    bool ConnectToTheDevice(const QString);
+    bool CheckPort(QString);
+    void SendData(QString);
 
      QSerialPort *serialport;
-     Alarm *alarm;
 
 
-public slots:
-    void serialSlot(void);
+signals:
+    void gotCommand(QString command);
 
+private slots:
+    void readSerial();
+    void sendStatusCommand();
 
-private:
 
 };
 

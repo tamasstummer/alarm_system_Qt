@@ -21,14 +21,20 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-   Alarm myAlarm;
-   MyTimer *mTimer = new MyTimer(&myAlarm);
-   mySerial *mSerial = new mySerial(&myAlarm);
+    void sendDisarmCommand();
+    void sendArmCommand();
+    bool developerOption;
 
+   Alarm myAlarm;
+   MyTimer *mTimer = new MyTimer();
+   mySerial *mSerial = new mySerial();
 
 
 
 private slots:
+
+   void processSerialData(QString );
+
 
 
     void on_buttonPasswordOK_clicked();
