@@ -100,6 +100,7 @@ void MainWindow::processSerialData(QString command)
             myAlarm.SetRelay(relayValue);
             myAlarm.SetLog(logMessage);
             emit myAlarm.updatedDataFormSerial();
+
         }
 
 
@@ -160,10 +161,10 @@ void MainWindow::on_buttonArmTheSystem_clicked()
     QPixmap pm("C:/Users/tamas/Desktop/alkalm_hazi/alkfejl2019-szszs/alarm_system/pictures/closed_padlock.png"); // <- path to image file
     ui->label_2->setPixmap(pm);
     ui->label_2->setScaledContents(true);
+    ui->statusWindow->setEnabled(false);
     ui->text_Password->setText("");
     mTimer->stopTimer();
     sendArmCommand();
-    mSerial->serialport->close();
 
 
 
@@ -176,6 +177,14 @@ void MainWindow::on_buttonConnect_clicked()
     QString selectedComPort = ui->comboBox_COM_Port->currentText();
     qDebug() << "Selected COM Port: " << selectedComPort << endl;
     bool isAvailable =mSerial->CheckPort(selectedComPort);
+    if(mSerial->serialport->isOpen() == true)
+    {
+        mTimer->startTimer(time_interval_ms);
+        qDebug() << "start the timer" << endl;
+        sendDisarmCommand();
+        return;
+
+    }
     if(isAvailable == true)
     {
 
@@ -210,3 +219,8 @@ void MainWindow::sendArmCommand()
 
 }
 
+
+void MainWindow::on_celarContentBtn_clicked()
+{
+     ui->logWindow->setPlainText("");
+}

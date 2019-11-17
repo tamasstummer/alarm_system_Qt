@@ -84,7 +84,7 @@ void mySerial::SendData(const QString command)
 {
 
         serialport ->write(command.toStdString().c_str());
-        qDebug() << "Deata sent" << endl;
+        qDebug() << "Data sent";
 
 
 }
@@ -95,7 +95,7 @@ void mySerial::sendStatusCommand()
 
 
     this->SendData("STATUS");
-    this->serialport->waitForReadyRead(2000);
+    this->serialport->waitForReadyRead(300);
 }
 
 

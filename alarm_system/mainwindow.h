@@ -47,6 +47,8 @@ private slots:
     void on_buttonConnect_clicked();
 
 
+    void on_celarContentBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
 
