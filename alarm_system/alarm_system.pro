@@ -1,6 +1,6 @@
 QT       += core gui serialport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++11
 
@@ -20,13 +20,15 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     myserial.cpp \
-    mytimer.cpp
+    mytimer.cpp \
+    qcustomplot.cpp
 
 HEADERS += \
     alarm.h \
     mainwindow.h \
     myserial.h \
-    mytimer.h
+    mytimer.h \
+    qcustomplot.h
 
 FORMS += \
     mainwindow.ui

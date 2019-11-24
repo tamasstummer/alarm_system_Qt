@@ -48,9 +48,6 @@ void MainWindow::fillMyAlarmForDevelopment()
     QVector<int> datas = {(std::rand()%50),(std::rand()%50)};
     myAlarm.SetHumidityAndTemperature(datas);
     emit myAlarm.updatedDataFormSerial();
-
-
-
 }
 
 void MainWindow::IncreaseProgressBar()
@@ -77,6 +74,29 @@ void MainWindow::updateWindowAfterSAtatusChanged()
     QVector<int> humidAndTemp = myAlarm.GetHumidityAndTemperature();
     ui->lcdTempStatus->display(humidAndTemp[1]);
     ui->lcdHmidStatus->display(humidAndTemp[0]);
+}
+
+void MainWindow::on_buttonBattPlot_clicked()
+{
+    //connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(on_buttonBattPlot_clicked())  );
+    //plotTimer->startTimer(time_interval_ms);
+    QVector<double> x(10);
+    QVector<double> y(10);
+    for(int i = 0; i < 10; i++)
+            {
+        x[i] = i/10.0;
+        y[i] = myAlarm.GetBattery();
+            }
+    // create graph and assign data to it:
+    ui->customPlot->addGraph();
+    ui->customPlot->graph(0)->setData(x, y);
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("time [s]");
+    ui->customPlot->yAxis->setLabel("SOC [%]");
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0, 10);
+    ui->customPlot->yAxis->setRange(0, 100);
+    ui->customPlot->replot();
 }
 
 void MainWindow::processSerialData(QString command)
@@ -213,7 +233,14 @@ void MainWindow::on_buttonConnect_clicked()
     QString selectedComPort = ui->comboBox_COM_Port->currentText();
     qDebug() << "Selected COM Port: " << selectedComPort << endl;
     bool isAvailable =mSerial->CheckPort(selectedComPort);
-    this->SelfTestOption = ui->isSelfTestMode->isChecked();
+    if(mSerial->serialport->isOpen() == true)
+    {
+        mTimer->startTimer(time_interval_ms);
+        qDebug() << "start the timer" << endl;
+        sendDisarmCommand();
+        return;
+
+    }
     if(isAvailable == true)
     {
 

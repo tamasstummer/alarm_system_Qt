@@ -33,6 +33,7 @@ public:
    MyTimer *developerTimer = new MyTimer();
    MyTimer *selfTestTimer = new MyTimer();
 
+   MyTimer *plotTimer = new MyTimer();
 
 
 
@@ -44,17 +45,23 @@ private slots:
 
    void fillMyAlarmForDevelopment();
 
+   void on_buttonPasswordOK_clicked();
+
+   void on_buttonArmTheSystem_clicked();
+
+   void on_buttonConnect_clicked();
+
     void on_buttonPasswordOK_clicked();
 
     void on_buttonArmTheSystem_clicked();
 
-    void on_buttonConnect_clicked();
+   void on_celarContentBtn_clicked();
 
-    void IncreaseProgressBar();
+   void on_buttonBattPlot_clicked();
 
+   //void on_buttonAlarmPlot_clicked(); //not implemented yet
 
-    void on_celarContentBtn_clicked();
-
+   //void on_buttonTempPlot_clicked(); //not implemented yet
 
 private:
     Ui::MainWindow *ui;
