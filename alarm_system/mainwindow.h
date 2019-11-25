@@ -57,6 +57,8 @@ private slots:
 
    void on_celarContentBtn_clicked();
 
+   void updatePlotData();
+
    void on_buttonBattPlot_clicked();
 
    //void on_buttonAlarmPlot_clicked(); //not implemented yet

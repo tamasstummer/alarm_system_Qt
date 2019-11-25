@@ -76,27 +76,40 @@ void MainWindow::updateWindowAfterSAtatusChanged()
     ui->lcdHmidStatus->display(humidAndTemp[0]);
 }
 
-void MainWindow::on_buttonBattPlot_clicked()
+void MainWindow::updatePlotData()
 {
-    //connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(on_buttonBattPlot_clicked())  );
-    //plotTimer->startTimer(time_interval_ms);
     QVector<double> x(10);
-    QVector<double> y(10);
-    for(int i = 0; i < 10; i++)
-            {
-        x[i] = i/10.0;
-        y[i] = myAlarm.GetBattery();
-            }
+    //QVector<double> y(10);
+    double y;
     // create graph and assign data to it:
     ui->customPlot->addGraph();
-    ui->customPlot->graph(0)->setData(x, y);
+
+    for(int i = 0; i < 10; i++)
+    {
+        x[i] = i;
+    }
+    //ui->customPlot->graph(0)->setData(x, y);
     // give the axes some labels:
     ui->customPlot->xAxis->setLabel("time [s]");
     ui->customPlot->yAxis->setLabel("SOC [%]");
     // set axes ranges, so we see all data:
     ui->customPlot->xAxis->setRange(0, 10);
     ui->customPlot->yAxis->setRange(0, 100);
-    ui->customPlot->replot();
+
+    for(int i = 0; i < 10; i++)
+    {
+        y = myAlarm.GetBattery();
+        ui->customPlot->graph(0)->addData(x[i], y);
+        emit ui->customPlot->replot();
+    }
+
+
+}
+
+void MainWindow::on_buttonBattPlot_clicked()
+{
+    connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
+    plotTimer->startTimer(time_interval_ms);
 }
 
 void MainWindow::processSerialData(QString command)
