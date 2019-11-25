@@ -19,6 +19,7 @@ SOURCES += \
     alarm.cpp \
     main.cpp \
     mainwindow.cpp \
+    myplot.cpp \
     myserial.cpp \
     mytimer.cpp \
     qcustomplot.cpp
@@ -26,6 +27,7 @@ SOURCES += \
 HEADERS += \
     alarm.h \
     mainwindow.h \
+    myplot.h \
     myserial.h \
     mytimer.h \
     qcustomplot.h

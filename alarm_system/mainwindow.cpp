@@ -10,10 +10,13 @@
 #include <cstdlib>
 #include "mytimer.h"
 #include "myserial.h"
+#include "myplot.h"
 
 
 #define time_interval_ms 1000
 #define time_interval_plot_ms 1000
+#define time_slice_plot_ms 100
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -98,6 +101,12 @@ void MainWindow::updatePlotData()
 
 }
 
+void MainWindow::gatherPlotData()
+{
+    QVector<double> y(10);
+    y[0] = myAlarm.GetBattery();
+}
+
 void MainWindow::on_buttonBattPlot_clicked()
 {
     //Init the plot area
@@ -120,12 +129,15 @@ void MainWindow::on_buttonBattPlot_clicked()
 
     //Init the slider
     ui->timeSlide->setRange(0, 10);
+
     connect(ui->timeSlide, SIGNAL(valueChanged(int)), this, SLOT(on_timeSlide_valueChanged(int)));
     connect(ui->customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
 
     //Call the update function if emit
     connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
+    connect(sliceTimer->timer, SIGNAL(timeout()), this, SLOT(gatherPlotData()));
     plotTimer->startTimer(time_interval_plot_ms);
+    sliceTimer->startTimer(time_slice_plot_ms);
 
 }
 

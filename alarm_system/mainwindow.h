@@ -7,6 +7,7 @@
 #include "mytimer.h"
 #include "myserial.h"
 #include "qcustomplot.h"
+#include "myplot.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -34,7 +35,9 @@ public:
    MyTimer *developerTimer = new MyTimer();
    MyTimer *selfTestTimer = new MyTimer();
 
+   MyTimer *sliceTimer = new MyTimer();
    MyTimer *plotTimer = new MyTimer();
+   MyPlot *plotData = new MyPlot();
 
 
 
@@ -59,6 +62,8 @@ private slots:
    void on_celarContentBtn_clicked();
 
    void updatePlotData();
+
+   void gatherPlotData();
 
    void on_buttonBattPlot_clicked();
 
