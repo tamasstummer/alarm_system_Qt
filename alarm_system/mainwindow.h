@@ -6,6 +6,7 @@
 #include <alarm.h>
 #include "mytimer.h"
 #include "myserial.h"
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -61,9 +62,14 @@ private slots:
 
    void on_buttonBattPlot_clicked();
 
+   void on_timeSlide_valueChanged(int value);
+
+   void xAxisChanged(QCPRange range);
+
    //void on_buttonAlarmPlot_clicked(); //not implemented yet
 
    //void on_buttonTempPlot_clicked(); //not implemented yet
+
 
 private:
     Ui::MainWindow *ui;

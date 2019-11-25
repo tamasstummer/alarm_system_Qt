@@ -12,7 +12,8 @@
 #include "myserial.h"
 
 
-#define time_interval_ms 3000
+#define time_interval_ms 1000
+#define time_interval_plot_ms 1000
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -76,40 +77,72 @@ void MainWindow::updateWindowAfterSAtatusChanged()
     ui->lcdHmidStatus->display(humidAndTemp[0]);
 }
 
+//Plot functions
 void MainWindow::updatePlotData()
 {
     QVector<double> x(10);
-    //QVector<double> y(10);
     double y;
-    // create graph and assign data to it:
-    ui->customPlot->addGraph();
-
-    for(int i = 0; i < 10; i++)
+    for(int i=0; i < 10; i++)
     {
         x[i] = i;
     }
-    //ui->customPlot->graph(0)->setData(x, y);
-    // give the axes some labels:
-    ui->customPlot->xAxis->setLabel("time [s]");
-    ui->customPlot->yAxis->setLabel("SOC [%]");
-    // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(0, 10);
-    ui->customPlot->yAxis->setRange(0, 100);
 
-    for(int i = 0; i < 10; i++)
+    for(int i=0; i < 10; i++)
     {
         y = myAlarm.GetBattery();
         ui->customPlot->graph(0)->addData(x[i], y);
-        emit ui->customPlot->replot();
+        ui->customPlot->update();
     }
-
+    ui->customPlot->replot();
+    //ui->customPlot->graph(0)->setData(x, y);
 
 }
 
 void MainWindow::on_buttonBattPlot_clicked()
 {
+    //Init the plot area
+    QVector<double> x(10);
+    QVector<double> y(10);
+    for(int i =0; i < 9; i++)
+    {
+        x[i] = i;
+        y[i] = 0;
+    }
+    // create graph and assign data to it:
+    ui->customPlot->addGraph();
+    ui->customPlot->graph(0)->setData(x, y);
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("time [s]");
+    ui->customPlot->yAxis->setLabel("SOC [%]");
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0, 9);
+    ui->customPlot->yAxis->setRange(0, 100);
+
+    //Init the slider
+    ui->timeSlide->setRange(0, 10);
+    connect(ui->timeSlide, SIGNAL(valueChanged(int)), this, SLOT(on_timeSlide_valueChanged(int)));
+    connect(ui->customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
+
+    //Call the update function if emit
     connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
-    plotTimer->startTimer(time_interval_ms);
+    plotTimer->startTimer(time_interval_plot_ms);
+
+}
+
+void MainWindow::on_timeSlide_valueChanged(int value)
+{
+
+  if (qAbs(ui->customPlot->xAxis->range().center()-value/10.0) > 0.01) // if user is dragging plot, we don't want to replot twice
+  {
+    ui->customPlot->xAxis->setRange(value/10.0, ui->customPlot->xAxis->range().size(), Qt::AlignCenter);
+    ui->customPlot->replot();
+  }
+}
+
+void MainWindow::xAxisChanged(QCPRange range)
+{
+  ui->timeSlide->setValue(qRound(range.center()*10.0)); // adjust position of scroll bar slider
+  ui->timeSlide->setPageStep(qRound(range.size()*10.0)); // adjust size of scroll bar slider
 }
 
 void MainWindow::processSerialData(QString command)
@@ -291,9 +324,6 @@ void MainWindow::on_buttonConnect_clicked()
 
     }
 }
-
-
-
 
 void MainWindow::sendDisarmCommand()
 {

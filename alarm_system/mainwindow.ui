@@ -348,7 +348,7 @@
     <widget class="QPushButton" name="buttonAlarmPlot">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>310</x>
        <y>70</y>
        <width>141</width>
        <height>28</height>
@@ -364,7 +364,7 @@
     <widget class="QPushButton" name="buttonTempPlot">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>310</x>
        <y>10</y>
        <width>141</width>
        <height>28</height>
@@ -380,7 +380,7 @@
     <widget class="QPushButton" name="buttonBattPlot">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>310</x>
        <y>40</y>
        <width>141</width>
        <height>28</height>
@@ -396,7 +396,7 @@
     <widget class="QLCDNumber" name="lcdBatteryStatus">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>20</y>
        <width>71</width>
        <height>31</height>
@@ -409,7 +409,7 @@
     <widget class="QLCDNumber" name="lcdHmidStatus">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>60</y>
        <width>71</width>
        <height>31</height>
@@ -422,7 +422,7 @@
     <widget class="QLCDNumber" name="lcdTempStatus">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>100</y>
        <width>71</width>
        <height>31</height>
@@ -435,7 +435,7 @@
     <widget class="QSlider" name="timeSlide">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>310</x>
        <y>110</y>
        <width>141</width>
        <height>22</height>
@@ -458,14 +458,14 @@ background-color: rgb(255, 255, 255);</string>
     <widget class="QLabel" name="label_10">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>240</x>
        <y>110</y>
-       <width>81</width>
+       <width>61</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ffffff;&quot;&gt;TimeScale:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ffffff;&quot;&gt;Scale:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_14">
@@ -486,7 +486,7 @@ background-color: rgb(255, 255, 255);</string>
       <rect>
        <x>10</x>
        <y>70</y>
-       <width>81</width>
+       <width>91</width>
        <height>20</height>
       </rect>
      </property>
@@ -499,7 +499,7 @@ background-color: rgb(255, 255, 255);</string>
       <rect>
        <x>10</x>
        <y>110</y>
-       <width>101</width>
+       <width>131</width>
        <height>20</height>
       </rect>
      </property>
