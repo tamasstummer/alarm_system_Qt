@@ -37,7 +37,9 @@ public:
 
    MyTimer *sliceTimer = new MyTimer();
    MyTimer *plotTimer = new MyTimer();
-   MyPlot *plotData = new MyPlot();
+   MyPlot *plotBattData = new MyPlot();
+   MyPlot *plotTempData = new MyPlot();
+   MyPlot *plotHumidData = new MyPlot();
 
 
 

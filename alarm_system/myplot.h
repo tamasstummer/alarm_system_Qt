@@ -1,15 +1,19 @@
 #ifndef MYPLOT_H
 #define MYPLOT_H
 #include <QtCore>
+#include <QMessageBox>
+#include <QPixmap>
+#include <iostream>
+#include <cstdlib>
 
 class MyPlot: public QObject
 {
     Q_OBJECT
 
 public:
-    MyPlot();
-    double x;
-    double y;
+    QVector<double> x;
+    QVector<double> y;
+    MyPlot() : x(10),y(10){}
 
 public slots:
     void PlotSlot();

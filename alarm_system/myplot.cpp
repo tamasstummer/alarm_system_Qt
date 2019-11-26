@@ -5,11 +5,11 @@
 #include <QtCore>
 #include <QDebug>
 
-MyPlot::MyPlot()
-{
+//MyPlot::MyPlot()
+//{
 
 
-}
+//}
 
 void MyPlot::PlotSlot()
 {

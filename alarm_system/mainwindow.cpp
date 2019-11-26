@@ -15,7 +15,7 @@
 
 #define time_interval_ms 1000
 #define time_interval_plot_ms 1000
-#define time_slice_plot_ms 100
+#define time_slice_plot_ms 1000
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -84,7 +84,7 @@ void MainWindow::updateWindowAfterSAtatusChanged()
 void MainWindow::updatePlotData()
 {
     QVector<double> x(10);
-    double y;
+    //double y;
     for(int i=0; i < 10; i++)
     {
         x[i] = i;
@@ -92,8 +92,7 @@ void MainWindow::updatePlotData()
 
     for(int i=0; i < 10; i++)
     {
-        y = myAlarm.GetBattery();
-        ui->customPlot->graph(0)->addData(x[i], y);
+        ui->customPlot->graph(0)->addData(x[i], plotBattData->y[i]);
         ui->customPlot->update();
     }
     ui->customPlot->replot();
@@ -103,8 +102,11 @@ void MainWindow::updatePlotData()
 
 void MainWindow::gatherPlotData()
 {
-    QVector<double> y(10);
-    y[0] = myAlarm.GetBattery();
+    //QVector<double> y(10);
+    for(int i=0; i < 10; i++)
+    plotBattData->y[i] =  myAlarm.GetBattery();
+    connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
+    //y[0] = myAlarm.GetBattery();
 }
 
 void MainWindow::on_buttonBattPlot_clicked()
@@ -124,7 +126,7 @@ void MainWindow::on_buttonBattPlot_clicked()
     ui->customPlot->xAxis->setLabel("time [s]");
     ui->customPlot->yAxis->setLabel("SOC [%]");
     // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(0, 9);
+    ui->customPlot->xAxis->setRange(0, 10);
     ui->customPlot->yAxis->setRange(0, 100);
 
     //Init the slider
@@ -134,7 +136,6 @@ void MainWindow::on_buttonBattPlot_clicked()
     connect(ui->customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
 
     //Call the update function if emit
-    connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
     connect(sliceTimer->timer, SIGNAL(timeout()), this, SLOT(gatherPlotData()));
     plotTimer->startTimer(time_interval_plot_ms);
     sliceTimer->startTimer(time_slice_plot_ms);
