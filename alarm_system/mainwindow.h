@@ -63,6 +63,8 @@ private slots:
 
    void on_celarContentBtn_clicked();
 
+   void clearPlotData();
+
    void updatePlotData();
 
    void gatherPlotData();

@@ -19,7 +19,10 @@ public:
 public slots:
     void PlotSlot();
 
-
+signals:
+    void updatePlotData();
+    void gatherPlotData();
+    void clearPlotData();
 
 };
 #endif // MYPLOT_H

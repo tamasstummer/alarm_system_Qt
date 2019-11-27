@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     progressBarActualValue = 0;
     connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(gatherPlotData()));
+    //connect(&myAlarm, SIGNAL(updatePlotData()), this, SLOT(clearPlotData()));
     this->developerOption = ui->isDeveloper->isChecked();
 
     //List the available serial COM ports
@@ -83,17 +84,23 @@ void MainWindow::updateWindowAfterSAtatusChanged()
 }
 
 //Plot functions
-void MainWindow::updatePlotData()
+void MainWindow::clearPlotData()
 {
     QVector<double> x(10);
     QVector<double> y(10);
 
-    //clear previous data
     for(int i =0; i < 10; i++)
-    {
-        x[i] = i;
-    }
-    ui->customPlot->graph(0)->setData(x,y);
+        {
+            x[i] = i;
+            y[i] = 0;
+        }
+        ui->customPlot->graph(0)->setData(x,y);
+}
+
+void MainWindow::updatePlotData()
+{
+    QVector<double> x(10);
+    QVector<double> y(10);
 
     //fill up the data arrays
     for(int i=0; i < 10; i++)
@@ -103,16 +110,11 @@ void MainWindow::updatePlotData()
     }
 
     //plot the new graph
+    //emit plotBattData->clearPlotData();
     ui->customPlot->graph(0)->setData(x,y);
     ui->customPlot->update();
     ui->customPlot->replot();
 
-    //fill up the data axis
-    /*for(int i=0; i < 10; i++)
-    {
-        ui->customPlot->graph(0)->addData(x[i], plotBattData->y[i]);
-        ui->customPlot->update();
-    }*/
 }
 
 void MainWindow::gatherPlotData()
@@ -125,6 +127,7 @@ void MainWindow::gatherPlotData()
        plotBattData->index = 0;
     }
     connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
+
 }
 
 void MainWindow::on_buttonBattPlot_clicked()
@@ -133,7 +136,7 @@ void MainWindow::on_buttonBattPlot_clicked()
     QVector<double> x(10);
     QVector<double> y(10);
     plotBattData->index = 0;
-    for(int i =0; i < 9; i++)
+    for(int i =0; i < 10; i++)
     {
         x[i] = i;
         y[i] = 0;
