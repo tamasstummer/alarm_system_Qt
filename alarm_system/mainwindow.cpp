@@ -29,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(selfTestTimer->timer, SIGNAL(timeout()),  this, SLOT(IncreaseProgressBar()));
 
     progressBarActualValue = 0;
+    connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(gatherPlotData()));
+    this->developerOption = ui->isDeveloper->isChecked();
 
     //List the available serial COM ports
     foreach(QSerialPortInfo port, QSerialPortInfo::availablePorts())
@@ -84,29 +86,45 @@ void MainWindow::updateWindowAfterSAtatusChanged()
 void MainWindow::updatePlotData()
 {
     QVector<double> x(10);
-    //double y;
-    for(int i=0; i < 10; i++)
+    QVector<double> y(10);
+
+    //clear previous data
+    for(int i =0; i < 10; i++)
     {
         x[i] = i;
     }
+    ui->customPlot->graph(0)->setData(x,y);
 
+    //fill up the data arrays
     for(int i=0; i < 10; i++)
+    {
+        x[i] = i;
+        y[i] = plotBattData->y[i];
+    }
+
+    //plot the new graph
+    ui->customPlot->graph(0)->setData(x,y);
+    ui->customPlot->update();
+    ui->customPlot->replot();
+
+    //fill up the data axis
+    /*for(int i=0; i < 10; i++)
     {
         ui->customPlot->graph(0)->addData(x[i], plotBattData->y[i]);
         ui->customPlot->update();
-    }
-    ui->customPlot->replot();
-    //ui->customPlot->graph(0)->setData(x, y);
-
+    }*/
 }
 
 void MainWindow::gatherPlotData()
 {
-    //QVector<double> y(10);
-    for(int i=0; i < 10; i++)
-    plotBattData->y[i] =  myAlarm.GetBattery();
+    plotBattData->y[plotBattData->index] =  myAlarm.GetBattery();
+    plotBattData->index ++;
+
+    if(plotBattData->index == 9)
+    {
+       plotBattData->index = 0;
+    }
     connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
-    //y[0] = myAlarm.GetBattery();
 }
 
 void MainWindow::on_buttonBattPlot_clicked()
@@ -114,6 +132,7 @@ void MainWindow::on_buttonBattPlot_clicked()
     //Init the plot area
     QVector<double> x(10);
     QVector<double> y(10);
+    plotBattData->index = 0;
     for(int i =0; i < 9; i++)
     {
         x[i] = i;
@@ -129,33 +148,11 @@ void MainWindow::on_buttonBattPlot_clicked()
     ui->customPlot->xAxis->setRange(0, 10);
     ui->customPlot->yAxis->setRange(0, 100);
 
-    //Init the slider
-    ui->timeSlide->setRange(0, 10);
-
-    connect(ui->timeSlide, SIGNAL(valueChanged(int)), this, SLOT(on_timeSlide_valueChanged(int)));
-    connect(ui->customPlot->xAxis, SIGNAL(rangeChanged(QCPRange)), this, SLOT(xAxisChanged(QCPRange)));
-
-    //Call the update function if emit
-    connect(sliceTimer->timer, SIGNAL(timeout()), this, SLOT(gatherPlotData()));
+    //Call the update function
+    connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(gatherPlotData()));
     plotTimer->startTimer(time_interval_plot_ms);
-    sliceTimer->startTimer(time_slice_plot_ms);
+    //sliceTimer->startTimer(time_slice_plot_ms);
 
-}
-
-void MainWindow::on_timeSlide_valueChanged(int value)
-{
-
-  if (qAbs(ui->customPlot->xAxis->range().center()-value/10.0) > 0.01) // if user is dragging plot, we don't want to replot twice
-  {
-    ui->customPlot->xAxis->setRange(value/10.0, ui->customPlot->xAxis->range().size(), Qt::AlignCenter);
-    ui->customPlot->replot();
-  }
-}
-
-void MainWindow::xAxisChanged(QCPRange range)
-{
-  ui->timeSlide->setValue(qRound(range.center()*10.0)); // adjust position of scroll bar slider
-  ui->timeSlide->setPageStep(qRound(range.size()*10.0)); // adjust size of scroll bar slider
 }
 
 void MainWindow::processSerialData(QString command)

@@ -13,6 +13,7 @@ class MyPlot: public QObject
 public:
     QVector<double> x;
     QVector<double> y;
+    int index = 0;
     MyPlot() : x(10),y(10){}
 
 public slots:

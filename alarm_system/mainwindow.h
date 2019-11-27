@@ -69,10 +69,6 @@ private slots:
 
    void on_buttonBattPlot_clicked();
 
-   void on_timeSlide_valueChanged(int value);
-
-   void xAxisChanged(QCPRange range);
-
    //void on_buttonAlarmPlot_clicked(); //not implemented yet
 
    //void on_buttonTempPlot_clicked(); //not implemented yet
