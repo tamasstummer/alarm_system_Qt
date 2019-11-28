@@ -22,8 +22,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(mSerial, SIGNAL(gotCommand(QString)), this, SLOT(processSerialData(QString)));
     connect(mTimer->timer, SIGNAL(timeout()), mSerial, SLOT(sendStatusCommand()));
     connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(updateWindowAfterSAtatusChanged()));
+    connect(selfTestTimer->timer, SIGNAL(timeout()),  this, SLOT(IncreaseProgressBar()));
 
-    this->developerOption = ui->isDeveloper->isChecked();
+    progressBarActualValue = 0;
 
     //List the available serial COM ports
     foreach(QSerialPortInfo port, QSerialPortInfo::availablePorts())
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
         QPixmap pm("C:/Users/tamas/Desktop/alkalm_hazi/alkfejl2019-szszs/alarm_system/pictures/closed_padlock.png"); // <- path to image file
         ui->label_2->setPixmap(pm);
         ui->label_2->setScaledContents(true);
+        ui->progressBar->setEnabled(false);
 }
 
 
@@ -51,6 +53,18 @@ void MainWindow::fillMyAlarmForDevelopment()
 
 }
 
+void MainWindow::IncreaseProgressBar()
+{
+if(progressBarActualValue <= 100)
+    ui->progressBar->setValue(progressBarActualValue++);
+else
+    {
+    this->selfTestTimer->stopTimer();
+    mSerial->serialport->waitForReadyRead(1000);
+
+    }
+
+}
 
 
 void MainWindow::updateWindowAfterSAtatusChanged()
@@ -103,6 +117,25 @@ void MainWindow::processSerialData(QString command)
 
         }
 
+        if(command.startsWith("S"))
+        {
+            qDebug() << "hello from self test" << endl;
+            if(command.endsWith("OK"))
+            {
+                ui->logWindow->append("Self test was successful!");
+                myAlarm.selfTestResult = true;
+
+            }
+            else
+            {
+                ui->logWindow->append("Self test was unsuccessful!!!");
+                myAlarm.selfTestResult = false;
+
+            }
+
+
+        }
+
 
 }
 
@@ -113,6 +146,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     mSerial->serialport->close();
+
 
 }
 
@@ -132,6 +166,7 @@ void MainWindow::on_buttonPasswordOK_clicked()
         ui->label_2->setPixmap(pm);
         ui->label_2->setScaledContents(true);
         ui->statusWindow->setEnabled(true);
+        this->developerOption = ui->isDeveloper->isChecked();
         if(ui->isDeveloper->isChecked() == true )
         {
             connect(developerTimer->timer, SIGNAL(timeout()), this, SLOT(fillMyAlarmForDevelopment())  );
@@ -164,6 +199,7 @@ void MainWindow::on_buttonArmTheSystem_clicked()
     ui->statusWindow->setEnabled(false);
     ui->text_Password->setText("");
     mTimer->stopTimer();
+    developerTimer->stopTimer();
     sendArmCommand();
 
 
@@ -177,14 +213,7 @@ void MainWindow::on_buttonConnect_clicked()
     QString selectedComPort = ui->comboBox_COM_Port->currentText();
     qDebug() << "Selected COM Port: " << selectedComPort << endl;
     bool isAvailable =mSerial->CheckPort(selectedComPort);
-    if(mSerial->serialport->isOpen() == true)
-    {
-        mTimer->startTimer(time_interval_ms);
-        qDebug() << "start the timer" << endl;
-        sendDisarmCommand();
-        return;
-
-    }
+    this->SelfTestOption = ui->isSelfTestMode->isChecked();
     if(isAvailable == true)
     {
 
@@ -196,10 +225,30 @@ void MainWindow::on_buttonConnect_clicked()
             else{ui->label_12->setText("User");}
             sendDisarmCommand();
 
-           mTimer->startTimer(time_interval_ms);
-           qDebug() << "start the timer" << endl;
-
         }
+    }
+    if(SelfTestOption == true)
+    {
+        selfTestTimer->startTimer(10);
+        ui->progressBar->setEnabled(true);
+        mSerial->SendData("SELFTEST");
+        mSerial->serialport->waitForReadyRead(1000);
+
+
+    }
+
+    if(mSerial->serialport->isOpen() == true && myAlarm.selfTestResult == true )
+    {
+        mTimer->startTimer(time_interval_ms);
+        qDebug() << "start the timer" << endl;
+
+        sendDisarmCommand();
+        return;
+
+    }
+    else{
+        qDebug() << "Error during starting the communication" << endl;
+
     }
 }
 
@@ -224,3 +273,5 @@ void MainWindow::on_celarContentBtn_clicked()
 {
      ui->logWindow->setPlainText("");
 }
+
+

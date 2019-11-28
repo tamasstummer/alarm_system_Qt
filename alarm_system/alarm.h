@@ -34,6 +34,7 @@ public:
     int GetBattery(void);
     void SetRelay(bool);
     bool GetRelay(void);
+    bool selfTestResult;
 
 signals:
     void updatedDataFormSerial();
@@ -46,6 +47,8 @@ private:
     bool relay;
     QVector<int> humidityAndTemperature;
     QString log;
+
+
 
 };
 

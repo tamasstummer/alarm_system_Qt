@@ -82,18 +82,13 @@ bool mySerial::CheckPort(QString comport)
 
 void mySerial::SendData(const QString command)
 {
-
         serialport ->write(command.toStdString().c_str());
         qDebug() << "Data sent";
-
-
 }
 
 
 void mySerial::sendStatusCommand()
 {
-
-
     this->SendData("STATUS");
     this->serialport->waitForReadyRead(300);
 }

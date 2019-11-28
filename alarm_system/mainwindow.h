@@ -24,11 +24,15 @@ public:
     void sendDisarmCommand();
     void sendArmCommand();
     bool developerOption;
+    bool SelfTestOption;
+    int progressBarActualValue;
 
    Alarm myAlarm;
    MyTimer *mTimer = new MyTimer();
    mySerial *mSerial = new mySerial();
    MyTimer *developerTimer = new MyTimer();
+   MyTimer *selfTestTimer = new MyTimer();
+
 
 
 
@@ -46,8 +50,11 @@ private slots:
 
     void on_buttonConnect_clicked();
 
+    void IncreaseProgressBar();
+
 
     void on_celarContentBtn_clicked();
+
 
 private:
     Ui::MainWindow *ui;
