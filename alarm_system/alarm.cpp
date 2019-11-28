@@ -14,7 +14,7 @@
 Alarm::Alarm()
 {
 
-
+    this->selfTestResult = true;
 }
 
 
