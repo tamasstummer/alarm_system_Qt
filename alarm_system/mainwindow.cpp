@@ -13,16 +13,17 @@
 
 
 #define time_interval_ms 3000
+#define time_interval_self_test 10
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(mSerial, SIGNAL(gotCommand(QString)), this, SLOT(processSerialData(QString)));
-    connect(mTimer->timer, SIGNAL(timeout()), mSerial, SLOT(sendStatusCommand()));
-    connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(updateWindowAfterSAtatusChanged()));
-    connect(selfTestTimer->timer, SIGNAL(timeout()),  this, SLOT(IncreaseProgressBar()));
+    connect(mSerial, SIGNAL(gotCommand(QString)), this, SLOT(processSerialData(QString)));  // if received any command, process it
+    connect(mTimer->timer, SIGNAL(timeout()), mSerial, SLOT(sendStatusCommand()));          // periodicly ask the alarm for status info
+    connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(updateWindowAfterSAtatusChanged()));    //if the incoming data processed, update the UI
+    connect(selfTestTimer->timer, SIGNAL(timeout()),  this, SLOT(IncreaseProgressBar()));               //control the status bar during self test
 
     progressBarActualValue = 0;
 
@@ -32,15 +33,19 @@ MainWindow::MainWindow(QWidget *parent)
         ui->comboBox_COM_Port->addItem(port.portName());
     }
 
-        ui->comboBox_COM_Port->show();
-        ui->groupBox_2->setStyleSheet("background-color: #ccdbdb");  // Valami fullos színt kéne állítani
-        QPixmap pm("C:/Users/tamas/Desktop/alkalm_hazi/alkfejl2019-szszs/alarm_system/pictures/closed_padlock.png"); // <- path to image file
-        ui->label_2->setPixmap(pm);
-        ui->label_2->setScaledContents(true);
-        ui->progressBar->setEnabled(false);
+    ui->comboBox_COM_Port->show();
+    ui->groupBox_2->setStyleSheet("background-color: #ccdbdb");  // Valami fullos színt kéne állítani
+    QPixmap pm("C:/Users/tamas/Desktop/alkalm_hazi/alkfejl2019-szszs/alarm_system/pictures/closed_padlock.png"); // <- path to image file
+    ui->label_2->setPixmap(pm);
+    ui->label_2->setScaledContents(true);
+    ui->progressBar->setEnabled(false);
 }
 
-
+/**
+ * @brief Fill the alarm instance with fake data. Help in the development, if teammembers don't have the actual alarm circuit
+ * @note The function emit the updatedDataFormSerial SIGNAL
+ * @see MainWindow::updateWindowAfterSAtatusChanged
+ */
 void MainWindow::fillMyAlarmForDevelopment()
 {
 
@@ -49,10 +54,10 @@ void MainWindow::fillMyAlarmForDevelopment()
     myAlarm.SetHumidityAndTemperature(datas);
     emit myAlarm.updatedDataFormSerial();
 
-
-
 }
-
+/**
+ * @brief Controll the progress bar during self test
+ */
 void MainWindow::IncreaseProgressBar()
 {
 if(progressBarActualValue <= 100)
@@ -61,12 +66,12 @@ else
     {
     this->selfTestTimer->stopTimer();
     mSerial->serialport->waitForReadyRead(1000);
-
     }
-
 }
 
-
+/**
+ * @brief Update the UI after data received
+ */
 void MainWindow::updateWindowAfterSAtatusChanged()
 {
 
@@ -79,6 +84,12 @@ void MainWindow::updateWindowAfterSAtatusChanged()
     ui->lcdHmidStatus->display(humidAndTemp[0]);
 }
 
+/**
+ * @brief Process the response of the alarm, and update the Alarm instance's datafields with the getted parameters
+ * @note The end of the function emit the "updatedDataFormSerial" SIGNAL
+ * @see MainWindow::updateWindowAfterSAtatusChanged()
+ * @param command
+ */
 void MainWindow::processSerialData(QString command)
 {
 
@@ -90,8 +101,8 @@ void MainWindow::processSerialData(QString command)
     QString logMessage;
 
 
-        qDebug() << command <<endl;
-        if(command.startsWith("B"))
+        qDebug() << "The getted command: " << command <<endl;
+        if(command.startsWith("B"))  //Contains information about the sensors
         {
             unsigned char c_command[15];
             memcpy( c_command, command.toStdString().c_str() ,command.size());
@@ -117,9 +128,8 @@ void MainWindow::processSerialData(QString command)
 
         }
 
-        if(command.startsWith("S"))
+        if(command.startsWith("S"))  //The result of the self test
         {
-            qDebug() << "hello from self test" << endl;
             if(command.endsWith("OK"))
             {
                 ui->logWindow->append("Self test was successful!");
@@ -133,9 +143,7 @@ void MainWindow::processSerialData(QString command)
 
             }
 
-
         }
-
 
 }
 
@@ -146,12 +154,13 @@ MainWindow::~MainWindow()
 {
     delete ui;
     mSerial->serialport->close();
-
-
 }
 
 
-
+/**
+ * @brief Check if the password is right. If developer mod is selected, a connection is made between a timer and a SLOT
+ * @see MainWindow::fillMyAlarmForDevelopment
+ */
 void MainWindow::on_buttonPasswordOK_clicked()
 {
     QString input_password_by_user = ui->text_Password->text();
@@ -166,6 +175,7 @@ void MainWindow::on_buttonPasswordOK_clicked()
         ui->label_2->setPixmap(pm);
         ui->label_2->setScaledContents(true);
         ui->statusWindow->setEnabled(true);
+        ui->progressBar->setEnabled(true);
         this->developerOption = ui->isDeveloper->isChecked();
         if(ui->isDeveloper->isChecked() == true )
         {
@@ -185,6 +195,9 @@ void MainWindow::on_buttonPasswordOK_clicked()
 
 }
 
+/**
+ * @brief SLOT of the buttonArmTheSystem button's action. Arm the alarmy system, and lock some UI part
+ */
 void MainWindow::on_buttonArmTheSystem_clicked()
 {
 
@@ -200,67 +213,81 @@ void MainWindow::on_buttonArmTheSystem_clicked()
     ui->text_Password->setText("");
     mTimer->stopTimer();
     developerTimer->stopTimer();
+    ui->progressBar->setValue(0);
+    ui->progressBar->setEnabled(false);
     sendArmCommand();
-
-
-
 
 }
 
+/**
+ * @brief SLOT of the buttonConnect button's action. Establish the communication between the computer and the alarm
+ */
 void MainWindow::on_buttonConnect_clicked()
 {
 
     QString selectedComPort = ui->comboBox_COM_Port->currentText();
     qDebug() << "Selected COM Port: " << selectedComPort << endl;
-    bool isAvailable =mSerial->CheckPort(selectedComPort);
+    qDebug() << "Is there any available COM Port: " << mSerial->CheckPort(selectedComPort) << endl;
     this->SelfTestOption = ui->isSelfTestMode->isChecked();
-    if(isAvailable == true)
+    bool status = false;
+    if(myAlarm.GetIsAvailable() == false)
     {
+        status = mSerial->ConnectToTheDevice(selectedComPort);
+    }
 
-        bool status = mSerial->ConnectToTheDevice(selectedComPort);
-        if(status == true)
+    qDebug() << "Communication established?: " << status << endl;
+
+    if(status == true)
         {   ui->label_5->setText(selectedComPort);
             ui->label_6->setText(QString::number(mSerial->serialport->baudRate()));
-            if(developerOption){ui->label_12->setText("Developer");}
-            else{ui->label_12->setText("User");}
+            if(developerOption)
+            {
+                ui->label_12->setText("Developer");
+            }
+            else
+            {
+                ui->label_12->setText("User");
+            }
             sendDisarmCommand();
 
         }
-    }
-    if(SelfTestOption == true)
+
+    if(this->SelfTestOption == true)
     {
-        selfTestTimer->startTimer(10);
+        selfTestTimer->startTimer(time_interval_self_test);
         ui->progressBar->setEnabled(true);
         mSerial->SendData("SELFTEST");
         mSerial->serialport->waitForReadyRead(1000);
-
-
     }
 
     if(mSerial->serialport->isOpen() == true && myAlarm.selfTestResult == true )
     {
         mTimer->startTimer(time_interval_ms);
         qDebug() << "start the timer" << endl;
-
         sendDisarmCommand();
         return;
 
     }
-    else{
+    else
+    {
         qDebug() << "Error during starting the communication" << endl;
-
     }
 }
 
 
 
-
+/**
+ * @brief Disarm the system
+ */
 void MainWindow::sendDisarmCommand()
 {
     mSerial->SendData("DISARM");
     mSerial->serialport->waitForReadyRead(2000);
 }
 
+/**
+ * @brief Arm the system
+ */
 void MainWindow::sendArmCommand()
 {
      mSerial->SendData("ARM");
@@ -268,7 +295,9 @@ void MainWindow::sendArmCommand()
 
 }
 
-
+/**
+ * @brief Clear the content of the UI's log window
+ */
 void MainWindow::on_celarContentBtn_clicked()
 {
      ui->logWindow->setPlainText("");
