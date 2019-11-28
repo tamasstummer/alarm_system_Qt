@@ -51,15 +51,13 @@ private slots:
 
    void fillMyAlarmForDevelopment();
 
+   void IncreaseProgressBar();
+
    void on_buttonPasswordOK_clicked();
 
    void on_buttonArmTheSystem_clicked();
 
    void on_buttonConnect_clicked();
-
-    void on_buttonPasswordOK_clicked();
-
-    void on_buttonArmTheSystem_clicked();
 
    void on_celarContentBtn_clicked();
 
