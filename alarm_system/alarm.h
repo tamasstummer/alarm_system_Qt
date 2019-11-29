@@ -15,9 +15,7 @@ public:
 
 
     QString GetPassword(void);
-    QString GetPortName(void);
     bool GetIsAvailable(void);
-    void SetPortName(QString);
     void SetIsAvailable(bool);
     void SetHumidityAndTemperature(QVector<int>);
     QVector<int> GetHumidityAndTemperature();
@@ -34,7 +32,6 @@ signals:
 
 private:
     const QString password = "1234";
-    QString PortName;
     bool isAvailable;
     int battery;
     bool relay;

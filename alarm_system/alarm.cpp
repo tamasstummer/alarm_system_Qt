@@ -13,28 +13,9 @@ Alarm::Alarm()
     this->selfTestResult = true;
 }
 
-
-/**
- * @brief Set the used COM port's name
- * @param name - COM port's name
- */
-void Alarm::SetPortName(QString name)
-{
-    this->PortName = name;
-}
-
-/**
- * @brief Get the used COM port's name
- * @return
- */
-QString Alarm::GetPortName()
-{
-    return this->PortName;
-}
-
 /**
  * @brief Set the alarm availability
- * @param status
+ * @param bool
  */
 void Alarm::SetIsAvailable(bool status)
 {
@@ -51,7 +32,7 @@ bool Alarm::GetIsAvailable(void)
 
 /**
  * @brief Store the temperature and humidity
- * @param datas
+ * @param QVector<int>
  */
 void Alarm::SetHumidityAndTemperature(QVector<int> datas)
 {
@@ -80,7 +61,7 @@ QString Alarm::GetPassword()
 
 /**
  * @brief Set the alarm's log
- * @param log
+ * @param QString
  */
 void Alarm::SetLog(QString log)
 {
@@ -97,7 +78,7 @@ QString Alarm::GetLog(void)
 }
 /**
  * @brief Store the battery capacity
- * @param value
+ * @param int
  */
 void Alarm::SetBattery(int value)
 {
@@ -115,7 +96,7 @@ int Alarm::GetBattery(void)
 
 /**
  * @brief Store the relay status
- * @param status
+ * @param bool
  */
 void Alarm::SetRelay(bool status)
 {
