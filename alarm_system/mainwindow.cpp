@@ -310,15 +310,16 @@ void MainWindow::on_buttonConnect_clicked()
 
     QString selectedComPort = ui->comboBox_COM_Port->currentText();
     qDebug() << "Selected COM Port: " << selectedComPort << endl;
-    qDebug() << "Is there any available COM Port: " << mSerial->CheckPort(selectedComPort) << endl;
-    if(mSerial->serialport->isOpen() == true)
-    bool status = false;
-    if(myAlarm.GetIsAvailable() == false)
+    qDebug() << "Is there any available COM Port: " << mSerial->CheckPort() << endl;
+    this->SelfTestOption = ui->isSelfTestMode->isChecked();
+    if(myAlarm.GetIsAvailable() == true)
+    {
         qDebug() << "start the timer" << endl;
         sendDisarmCommand();
         return;
 
     }
+    else
     {
         status = mSerial->ConnectToTheDevice(selectedComPort);
     }

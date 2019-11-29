@@ -28,6 +28,7 @@ public:
     bool developerOption;
     bool SelfTestOption;
     int progressBarActualValue;
+    bool status = false;
 
    Alarm myAlarm;
    MyTimer *mTimer = new MyTimer();

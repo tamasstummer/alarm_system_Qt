@@ -62,7 +62,7 @@ void mySerial::readSerial()
 
 
 
-bool mySerial::CheckPort(QString comport)
+bool mySerial::CheckPort()
 {
 
 

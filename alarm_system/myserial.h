@@ -13,7 +13,7 @@ class mySerial: public QObject
 public:
     mySerial();
     bool ConnectToTheDevice(const QString);
-    bool CheckPort(QString);
+    bool CheckPort();
     void SendData(QString);
 
      QSerialPort *serialport;
