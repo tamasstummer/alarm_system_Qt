@@ -6,6 +6,8 @@
 #include <alarm.h>
 #include "mytimer.h"
 #include "myserial.h"
+#include "qcustomplot.h"
+#include "myplot.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -33,6 +35,11 @@ public:
    MyTimer *developerTimer = new MyTimer();
    MyTimer *selfTestTimer = new MyTimer();
 
+   MyTimer *sliceTimer = new MyTimer();
+   MyTimer *plotTimer = new MyTimer();
+   MyPlot *plotBattData = new MyPlot();
+   MyPlot *plotTempData = new MyPlot();
+   MyPlot *plotHumidData = new MyPlot();
 
 
 
@@ -44,16 +51,27 @@ private slots:
 
    void fillMyAlarmForDevelopment();
 
-    void on_buttonPasswordOK_clicked();
+   void IncreaseProgressBar();
 
-    void on_buttonArmTheSystem_clicked();
+   void on_buttonPasswordOK_clicked();
 
-    void on_buttonConnect_clicked();
+   void on_buttonArmTheSystem_clicked();
 
-    void IncreaseProgressBar();
+   void on_buttonConnect_clicked();
 
+   void on_celarContentBtn_clicked();
 
-    void on_celarContentBtn_clicked();
+   void clearPlotData();
+
+   void updatePlotData();
+
+   void gatherPlotData();
+
+   void on_buttonBattPlot_clicked();
+
+   //void on_buttonAlarmPlot_clicked(); //not implemented yet
+
+   //void on_buttonTempPlot_clicked(); //not implemented yet
 
 
 private:

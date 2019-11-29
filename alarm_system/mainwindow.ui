@@ -345,11 +345,11 @@
     <property name="title">
      <string>Status window</string>
     </property>
-    <widget class="QPushButton" name="alarmPlot">
+    <widget class="QPushButton" name="buttonAlarmPlot">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>70</y>
+       <x>310</x>
+       <y>100</y>
        <width>141</width>
        <height>28</height>
       </rect>
@@ -361,11 +361,11 @@
       <string>Table of sensor status</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="tempPlot">
+    <widget class="QPushButton" name="buttonTempPlot">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>10</y>
+       <x>310</x>
+       <y>20</y>
        <width>141</width>
        <height>28</height>
       </rect>
@@ -377,11 +377,11 @@
       <string>Plot temperature data</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="battPlot">
+    <widget class="QPushButton" name="buttonBattPlot">
      <property name="geometry">
       <rect>
-       <x>290</x>
-       <y>40</y>
+       <x>310</x>
+       <y>60</y>
        <width>141</width>
        <height>28</height>
       </rect>
@@ -396,7 +396,7 @@
     <widget class="QLCDNumber" name="lcdBatteryStatus">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>20</y>
        <width>71</width>
        <height>31</height>
@@ -409,7 +409,7 @@
     <widget class="QLCDNumber" name="lcdHmidStatus">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>60</y>
        <width>71</width>
        <height>31</height>
@@ -422,7 +422,7 @@
     <widget class="QLCDNumber" name="lcdTempStatus">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>100</y>
        <width>71</width>
        <height>31</height>
@@ -430,55 +430,6 @@
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
-    </widget>
-    <widget class="QGraphicsView" name="plotArea">
-     <property name="geometry">
-      <rect>
-       <x>35</x>
-       <y>141</y>
-       <width>401</width>
-       <height>311</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
-    </widget>
-    <widget class="QSlider" name="timeSlide">
-     <property name="geometry">
-      <rect>
-       <x>290</x>
-       <y>110</y>
-       <width>141</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>160</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(255, 255, 255);</string>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_10">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>110</y>
-       <width>81</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ffffff;&quot;&gt;TimeScale:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_14">
@@ -499,7 +450,7 @@ background-color: rgb(255, 255, 255);</string>
       <rect>
        <x>10</x>
        <y>70</y>
-       <width>81</width>
+       <width>91</width>
        <height>20</height>
       </rect>
      </property>
@@ -512,12 +463,25 @@ background-color: rgb(255, 255, 255);</string>
       <rect>
        <x>10</x>
        <y>110</y>
-       <width>101</width>
+       <width>131</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600; color:#ffffff;&quot;&gt;Temperature:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+    <widget class="QCustomPlot" name="customPlot" native="true">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>19</x>
+       <y>159</y>
+       <width>421</width>
+       <height>331</height>
+      </rect>
      </property>
     </widget>
    </widget>
@@ -550,7 +514,7 @@ background-color: rgb(255, 255, 255);</string>
      <x>0</x>
      <y>0</y>
      <width>1382</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menumenu">
@@ -568,6 +532,14 @@ background-color: rgb(255, 255, 255);</string>
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
