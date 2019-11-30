@@ -17,11 +17,6 @@ public:
     void stopTimer(void);
 
 
-public slots:
-    void TimerSlot();
-
-
-
 };
 
 #endif // MYTIMER_H

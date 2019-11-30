@@ -13,12 +13,15 @@
 #include "myplot.h"
 
 
+<<<<<<< HEAD
+#define time_interval_ms 3000
+#define time_interval_self_test 10
+=======
 #define time_interval_ms 1000
 #define time_interval_plot_ms 1000
-#define time_interval_self_test 10
+#define time_slice_plot_ms 1000
 
-
-
+>>>>>>> 2754f8083543f2329c71240bec1c07fa0bf2d8f8
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -61,6 +64,10 @@ void MainWindow::fillMyAlarmForDevelopment()
     QVector<int> datas = {(std::rand()%50),(std::rand()%50)};
     myAlarm.SetHumidityAndTemperature(datas);
     emit myAlarm.updatedDataFormSerial();
+<<<<<<< HEAD
+
+=======
+>>>>>>> 2754f8083543f2329c71240bec1c07fa0bf2d8f8
 }
 /**
  * @brief Controll the progress bar during self test
@@ -91,6 +98,14 @@ void MainWindow::updateWindowAfterSAtatusChanged()
     ui->lcdHmidStatus->display(humidAndTemp[0]);
 }
 
+<<<<<<< HEAD
+/**
+ * @brief Process the response of the alarm, and update the Alarm instance's datafields with the getted parameters
+ * @note The end of the function emit the "updatedDataFormSerial" SIGNAL
+ * @see MainWindow::updateWindowAfterSAtatusChanged()
+ * @param command
+ */
+=======
 //Plot functions
 void MainWindow::clearPlotData()
 {
@@ -166,13 +181,7 @@ void MainWindow::on_buttonBattPlot_clicked()
 
 }
 
-
-/**
- * @brief Process the response of the alarm, and update the Alarm instance's datafields with the getted parameters
- * @note The end of the function emit the "updatedDataFormSerial" SIGNAL
- * @see MainWindow::updateWindowAfterSAtatusChanged()
- * @param command
- */
+>>>>>>> 2754f8083543f2329c71240bec1c07fa0bf2d8f8
 void MainWindow::processSerialData(QString command)
 {
 
@@ -310,16 +319,23 @@ void MainWindow::on_buttonConnect_clicked()
 
     QString selectedComPort = ui->comboBox_COM_Port->currentText();
     qDebug() << "Selected COM Port: " << selectedComPort << endl;
-    qDebug() << "Is there any available COM Port: " << mSerial->CheckPort() << endl;
+<<<<<<< HEAD
+    qDebug() << "Is there any available COM Port: " << mSerial->CheckPort(selectedComPort) << endl;
     this->SelfTestOption = ui->isSelfTestMode->isChecked();
-    if(myAlarm.GetIsAvailable() == true)
+    bool status = false;
+    if(myAlarm.GetIsAvailable() == false)
+=======
+    bool isAvailable =mSerial->CheckPort(selectedComPort);
+    if(mSerial->serialport->isOpen() == true)
     {
+        mTimer->startTimer(time_interval_ms);
         qDebug() << "start the timer" << endl;
         sendDisarmCommand();
         return;
 
     }
-    else
+    if(isAvailable == true)
+>>>>>>> 2754f8083543f2329c71240bec1c07fa0bf2d8f8
     {
         status = mSerial->ConnectToTheDevice(selectedComPort);
     }
@@ -363,10 +379,14 @@ void MainWindow::on_buttonConnect_clicked()
     }
 }
 
+<<<<<<< HEAD
+
 
 /**
  * @brief Disarm the system
  */
+=======
+>>>>>>> 2754f8083543f2329c71240bec1c07fa0bf2d8f8
 void MainWindow::sendDisarmCommand()
 {
     mSerial->SendData("DISARM");

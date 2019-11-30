@@ -5,9 +5,6 @@
 #include <QSerialPort>
 
 
-
-
-
 class Alarm: public QObject
 {
 
@@ -15,16 +12,10 @@ class Alarm: public QObject
 
 public:
     Alarm();
-    ~Alarm();
-
-    const int VendorID = 6790;
-    const int ProductID = 29987;
 
 
     QString GetPassword(void);
-    QString GetPortName(void);
     bool GetIsAvailable(void);
-    void SetPortName(QString);
     void SetIsAvailable(bool);
     void SetHumidityAndTemperature(QVector<int>);
     QVector<int> GetHumidityAndTemperature();
@@ -34,18 +25,20 @@ public:
     int GetBattery(void);
     void SetRelay(bool);
     bool GetRelay(void);
+    bool selfTestResult;
 
 signals:
     void updatedDataFormSerial();
 
 private:
     const QString password = "1234";
-    QString PortName;  // COM port name
-    bool isAvailable;  // indicate if the COM port is available or not
+    bool isAvailable;
     int battery;
     bool relay;
     QVector<int> humidityAndTemperature;
     QString log;
+
+
 
 };
 

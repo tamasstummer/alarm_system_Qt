@@ -5,21 +5,27 @@
 #include <QDebug>
 #include <QMessageBox>
 
+
+/**
+ * @brief mySerial::mySerial
+ */
 mySerial::mySerial()
 {
     this->serialport = new QSerialPort();
     QObject::connect(this->serialport, SIGNAL(readyRead()), this, SLOT(readSerial()));
-
 }
 
 
 
-
+/**
+ * @brief Connect the client to the device through a COM port
+ * @param comport
+ * @return
+ */
 bool mySerial::ConnectToTheDevice(const QString comport)
 {
 
        bool isThereAnyError = false;
-
        this->serialport->setPortName(comport);
        if(! this->serialport->setBaudRate(QSerialPort::Baud9600))         {isThereAnyError = true;qDebug() << "error during setting baud";}
        if(! this->serialport->setDataBits(QSerialPort::Data8))            {isThereAnyError = true;qDebug() << "error during setting data7";}
@@ -27,25 +33,21 @@ bool mySerial::ConnectToTheDevice(const QString comport)
        if(! this->serialport->setStopBits(QSerialPort::OneStop))          {isThereAnyError = true;qDebug() << "error during setting opne stop";}
        if(! this->serialport->setFlowControl(QSerialPort::NoFlowControl)) {isThereAnyError = true;qDebug() << "error during setting non folw control";}
        if(! this->serialport->open(QIODevice::ReadWrite))                 {isThereAnyError = true;qDebug() << "error during open serial port";}
-
-
-       if(this->serialport->isOpen() == true)
-            {
-           qDebug() << "comport open";
-            }
+       if(this->serialport->isOpen() == true && isThereAnyError == false)
+        {
+            qDebug() << "COM port open";
+            MainWindow().myAlarm.SetIsAvailable(true);
+            return true;
+        }
 
        else
-            {qDebug() << "comport closed";}
-
-           if(isThereAnyError == true)
-           {
-               qDebug() << "there is no available device" << endl;
-               return false;
-           }
-           else {return true;}
-
-
+        {
+            qDebug() << "COM port closed";
+            return false;
+        }
 }
+
+
 
 void mySerial::readSerial()
 {
@@ -60,7 +62,7 @@ void mySerial::readSerial()
 
 
 
-bool mySerial::CheckPort(QString comport)
+bool mySerial::CheckPort()
 {
 
 
@@ -76,24 +78,17 @@ bool mySerial::CheckPort(QString comport)
     }
 
     return true;
-
-
 }
 
 void mySerial::SendData(const QString command)
 {
-
         serialport ->write(command.toStdString().c_str());
         qDebug() << "Data sent";
-
-
 }
 
 
 void mySerial::sendStatusCommand()
 {
-
-
     this->SendData("STATUS");
     this->serialport->waitForReadyRead(300);
 }

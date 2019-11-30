@@ -123,7 +123,7 @@ void Alarm::MeasureTempAndHumid()
     if (isnan(humidity) || isnan(temperature) ) {
       this->temperature = 0;
       this->humidity= 0;
-      return;
+      
     }
     else
     {
@@ -134,11 +134,6 @@ void Alarm::MeasureTempAndHumid()
     }
   
 }
-
-
-
-
-
 
 
 void setup() {
@@ -225,6 +220,47 @@ void processSerialData(String message)
      alarm.PrintOutStatus();
 
     
+  }
+
+    if(message.startsWith("SELFTEST"))
+  {
+    bool isThereAnyProblem = false;
+    for(int i = 0; i<5; i++)
+    {
+     alarm.enableBuzzer(true);
+     digitalWrite(RedLed, !digitalRead(RedLed));
+     digitalWrite(GreenLed, !digitalRead(GreenLed));
+     delay(100);
+     alarm.enableBuzzer(false);
+     digitalWrite(RedLed, !digitalRead(RedLed));
+     digitalWrite(GreenLed, !digitalRead(GreenLed));
+     delay(100);
+    }
+
+
+    alarm.batteryMeasure();
+    if(alarm.batteryCapaity < 2 || alarm.batteryCapaity > 10)
+    {
+
+      isThereAnyProblem = true;
+      
+    }
+
+    alarm.MeasureTempAndHumid();
+    if(alarm.temperature < 1 || alarm.temperature >= 30)
+    {
+      isThereAnyProblem = true;
+    }
+
+    if(isThereAnyProblem)
+    {
+      Serial.print("SELFTESTFAULT");
+      }
+    else{
+        Serial.print("SELFTESTOK");
+        }
+
+        
   }
 
 
