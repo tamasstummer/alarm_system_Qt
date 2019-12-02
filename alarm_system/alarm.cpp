@@ -1,7 +1,7 @@
 #include "alarm.h"
 #include <QDebug>
 #include <QVector>
-#include "ui_mainwindow.h"
+//#include "ui_mainwindow.h"
 #include "mainwindow.h"
 
 
