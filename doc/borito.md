@@ -8,7 +8,7 @@ Ez a 2019-es őszi félévbben intdult Alkalmazásfejlesztés tárgy házi felad
 Csapattagok:
 * Stummer Tamás  - E93A3T - tamas.stummer@gmail.com
 * Szenczi Máté	 - X9Q0T6 - szenczi.mate93@gmail.com
-* Szakály Balázs - Q57IAE -
+* Szakály Balázs - Q57IAE - szakib1@gmail.com
 
  ---
 
