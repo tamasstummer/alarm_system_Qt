@@ -15,6 +15,7 @@
 
 #define time_interval_ms 1000
 #define time_interval_plot_ms 1000
+#define time_interval_clear_ms 50
 #define time_interval_self_test 10
 
 
@@ -29,6 +30,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(mTimer->timer, SIGNAL(timeout()), mSerial, SLOT(sendStatusCommand()));          // periodicly ask the alarm for status info
     connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(updateWindowAfterSAtatusChanged()));    //if the incoming data processed, update the UI
     connect(selfTestTimer->timer, SIGNAL(timeout()),  this, SLOT(IncreaseProgressBar()));               //control the status bar during self test
+    //Plot relative timers
+    plotBattTimer->startTimer(time_interval_plot_ms);
+    plotHumidTimer->startTimer(time_interval_plot_ms);
+    plotTempTimer->startTimer(time_interval_plot_ms);
+    clearTimer->startTimer(time_interval_clear_ms);
 
     progressBarActualValue = 0;
     connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(gatherPlotData()));
@@ -94,57 +100,27 @@ void MainWindow::updateWindowAfterSAtatusChanged()
 //Plot functions
 void MainWindow::clearPlotData()
 {
-    QVector<double> x(10);
-    QVector<double> y(10);
-
-    for(int i =0; i < 10; i++)
-        {
-            x[i] = i;
-            y[i] = 0;
-        }
-        ui->customPlot->graph(0)->setData(x,y);
-}
-
-void MainWindow::updatePlotData()
-{
-    QVector<double> x(10);
-    QVector<double> y(10);
-
-    //fill up the data arrays
-    for(int i=0; i < 10; i++)
+    //Init the plot area
+    QVector<double> x(11);
+    QVector<double> y(11);
+    plotData->index = 0;
+    for(int i =0; i <= 10; i++)
     {
         x[i] = i;
-        y[i] = plotBattData->y[i];
+        y[i] = 0;
     }
-
-    //plot the new graph
-    //emit plotBattData->clearPlotData();
     ui->customPlot->graph(0)->setData(x,y);
     ui->customPlot->update();
     ui->customPlot->replot();
-
 }
 
-void MainWindow::gatherPlotData()
-{
-    plotBattData->y[plotBattData->index] =  myAlarm.GetBattery();
-    plotBattData->index ++;
-
-    if(plotBattData->index == 9)
-    {
-       plotBattData->index = 0;
-    }
-    connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
-
-}
-
-void MainWindow::on_buttonBattPlot_clicked()
+void MainWindow::initPlotData()
 {
     //Init the plot area
-    QVector<double> x(10);
-    QVector<double> y(10);
-    plotBattData->index = 0;
-    for(int i =0; i < 10; i++)
+    QVector<double> x(11);
+    QVector<double> y(11);
+    plotData->index = 0;
+    for(int i =0; i <= 10; i++)
     {
         x[i] = i;
         y[i] = 0;
@@ -152,6 +128,87 @@ void MainWindow::on_buttonBattPlot_clicked()
     // create graph and assign data to it:
     ui->customPlot->addGraph();
     ui->customPlot->graph(0)->setData(x, y);
+}
+
+void MainWindow::updatePlotData()
+{
+    QVector<double> x(11);
+    QVector<double> y(11);
+    //Fill up the data arrays
+    for(int i=0; i <= 10; i++)
+    {
+        x[i] = i;
+        y[i] = plotData->y_batt[i];
+    }
+
+    //plot the new graph
+    ui->customPlot->graph(0)->setData(x,y);
+    ui->customPlot->update();
+    ui->customPlot->replot();
+
+}
+
+void MainWindow::gatherBattData()
+{
+    plotData->y_batt[plotData->index] =  myAlarm.GetBattery();
+    plotData->index ++;
+
+    if(plotData->index == 10)
+    {
+       plotData->index = 0;
+
+       for(int i=0; i<=10; i++)
+       {
+            plotData->y_batt[i] = 0;
+       }
+    }
+    //connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(clearPlotData()));
+    connect(plotBattTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
+}
+
+void MainWindow::gatherTempData()
+{
+    QVector<int> HumidityTemperatureTemp    = myAlarm.GetHumidityAndTemperature();
+    plotData->y_temp[plotData->index]       =  HumidityTemperatureTemp[1];
+    plotData->index ++;
+
+    if(plotData->index == 10)
+    {
+       plotData->index = 0;
+
+       for(int i=0; i<=10; i++)
+       {
+            plotData->y_temp[i] = 0;
+       }
+    }
+    //connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(clearPlotData()));
+    connect(plotTempTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
+}
+
+void MainWindow::gatherHumidData()
+{
+    QVector<int> HumidityTemperatureTemp    = myAlarm.GetHumidityAndTemperature();
+    plotData->y_humid[plotData->index]      =  HumidityTemperatureTemp[0];
+    plotData->index ++;
+
+    if(plotData->index == 10)
+    {
+       plotData->index = 0;
+
+       for(int i=0; i<=10; i++)
+       {
+            plotData->y_humid[i]    = 0;
+       }
+    }
+    //connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(clearPlotData()));
+    connect(plotHumidTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
+}
+
+void MainWindow::on_buttonBattPlot_clicked()
+{
+    initPlotData();
+    clearPlotData();
+
     // give the axes some labels:
     ui->customPlot->xAxis->setLabel("time [s]");
     ui->customPlot->yAxis->setLabel("SOC [%]");
@@ -160,12 +217,41 @@ void MainWindow::on_buttonBattPlot_clicked()
     ui->customPlot->yAxis->setRange(0, 100);
 
     //Call the update function
-    connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(gatherPlotData()));
-    plotTimer->startTimer(time_interval_plot_ms);
-    //sliceTimer->startTimer(time_slice_plot_ms);
+    connect(plotBattTimer->timer, SIGNAL(timeout()), this, SLOT(gatherBattData()));
 
 }
 
+void MainWindow::on_buttonTempPlot_clicked()
+{
+    initPlotData();
+    clearPlotData();
+
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("time [s]");
+    ui->customPlot->yAxis->setLabel("Temperature [C°]");
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0, 10);
+    ui->customPlot->yAxis->setRange(0, 100);
+
+    //Call the update function
+    connect(plotTempTimer->timer, SIGNAL(timeout()), this, SLOT(gatherTempData()));
+}
+
+void MainWindow::on_buttonHumidPlot_clicked()
+{
+    initPlotData();
+    clearPlotData();
+
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("time [s]");
+    ui->customPlot->yAxis->setLabel("Humidity [%]");
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0, 10);
+    ui->customPlot->yAxis->setRange(0, 100);
+
+    //Call the update function
+    connect(plotHumidTimer->timer, SIGNAL(timeout()), this, SLOT(gatherHumidData()));
+}
 
 /**
  * @brief Process the response of the alarm, and update the Alarm instance's datafields with the getted parameters
@@ -390,5 +476,3 @@ void MainWindow::on_celarContentBtn_clicked()
 {
      ui->logWindow->setPlainText("");
 }
-
-

@@ -345,7 +345,7 @@
     <property name="title">
      <string>Status window</string>
     </property>
-    <widget class="QPushButton" name="buttonAlarmPlot">
+    <widget class="QPushButton" name="buttonHumidPlot">
      <property name="geometry">
       <rect>
        <x>310</x>
@@ -358,7 +358,7 @@
       <string notr="true">background-color: rgb(200, 200, 200);</string>
      </property>
      <property name="text">
-      <string>Table of sensor status</string>
+      <string>Plot humidity data</string>
      </property>
     </widget>
     <widget class="QPushButton" name="buttonTempPlot">
@@ -514,7 +514,7 @@
      <x>0</x>
      <y>0</y>
      <width>1382</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menumenu">

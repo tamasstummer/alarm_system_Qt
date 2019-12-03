@@ -12,9 +12,11 @@ class MyPlot: public QObject
 
 public:
     QVector<double> x;
-    QVector<double> y;
+    QVector<double> y_batt;
+    QVector<double> y_humid;
+    QVector<double> y_temp;
     int index = 0;
-    MyPlot() : x(10),y(10){}
+    MyPlot() : x(11), y_batt(11), y_humid(11), y_temp(11) {}
 
 public slots:
     void PlotSlot();

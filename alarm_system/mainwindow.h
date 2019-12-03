@@ -37,10 +37,11 @@ public:
    MyTimer *selfTestTimer = new MyTimer();
 
    MyTimer *sliceTimer = new MyTimer();
-   MyTimer *plotTimer = new MyTimer();
-   MyPlot *plotBattData = new MyPlot();
-   MyPlot *plotTempData = new MyPlot();
-   MyPlot *plotHumidData = new MyPlot();
+   MyTimer *plotBattTimer = new MyTimer();
+   MyTimer *plotHumidTimer = new MyTimer();
+   MyTimer *plotTempTimer = new MyTimer();
+   MyTimer *clearTimer = new MyTimer();
+   MyPlot *plotData = new MyPlot();
 
 
 
@@ -64,9 +65,15 @@ private slots:
 
    void clearPlotData();
 
+   void initPlotData();
+
    void updatePlotData();
 
-   void gatherPlotData();
+   void gatherBattData();
+
+   void gatherTempData();
+
+   void gatherHumidData();
 
    void on_buttonBattPlot_clicked();
 
@@ -74,6 +81,10 @@ private slots:
 
    //void on_buttonTempPlot_clicked(); //not implemented yet
 
+
+   void on_buttonTempPlot_clicked();
+
+   void on_buttonHumidPlot_clicked();
 
 private:
     Ui::MainWindow *ui;
