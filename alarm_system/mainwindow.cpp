@@ -145,6 +145,11 @@ void MainWindow::updatePlotData()
     ui->customPlot->graph(0)->setData(x,y);
     ui->customPlot->update();
     ui->customPlot->replot();
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0, 10);
+    ui->customPlot->yAxis->setRange(0, 100);
+    //Axis label
+    ui->customPlot->xAxis->setLabel("time [s]");
 
 }
 
@@ -162,7 +167,6 @@ void MainWindow::gatherBattData()
             plotData->y_batt[i] = 0;
        }
     }
-    //connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(clearPlotData()));
     connect(plotBattTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
 }
 
@@ -181,7 +185,6 @@ void MainWindow::gatherTempData()
             plotData->y_temp[i] = 0;
        }
     }
-    //connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(clearPlotData()));
     connect(plotTempTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
 }
 
@@ -200,7 +203,6 @@ void MainWindow::gatherHumidData()
             plotData->y_humid[i]    = 0;
        }
     }
-    //connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(clearPlotData()));
     connect(plotHumidTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
 }
 
@@ -210,11 +212,7 @@ void MainWindow::on_buttonBattPlot_clicked()
     clearPlotData();
 
     // give the axes some labels:
-    ui->customPlot->xAxis->setLabel("time [s]");
     ui->customPlot->yAxis->setLabel("SOC [%]");
-    // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(0, 10);
-    ui->customPlot->yAxis->setRange(0, 100);
 
     //Call the update function
     connect(plotBattTimer->timer, SIGNAL(timeout()), this, SLOT(gatherBattData()));
@@ -227,11 +225,7 @@ void MainWindow::on_buttonTempPlot_clicked()
     clearPlotData();
 
     // give the axes some labels:
-    ui->customPlot->xAxis->setLabel("time [s]");
     ui->customPlot->yAxis->setLabel("Temperature [C°]");
-    // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(0, 10);
-    ui->customPlot->yAxis->setRange(0, 100);
 
     //Call the update function
     connect(plotTempTimer->timer, SIGNAL(timeout()), this, SLOT(gatherTempData()));
@@ -243,11 +237,7 @@ void MainWindow::on_buttonHumidPlot_clicked()
     clearPlotData();
 
     // give the axes some labels:
-    ui->customPlot->xAxis->setLabel("time [s]");
     ui->customPlot->yAxis->setLabel("Humidity [%]");
-    // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(0, 10);
-    ui->customPlot->yAxis->setRange(0, 100);
 
     //Call the update function
     connect(plotHumidTimer->timer, SIGNAL(timeout()), this, SLOT(gatherHumidData()));
