@@ -15,7 +15,8 @@
 
 #define time_interval_ms 1000
 #define time_interval_plot_ms 1000
-#define time_interval_clear_ms 50
+#define time_interval_gather_ms 1000
+#define time_interval_clear_ms 100
 #define time_interval_self_test 10
 
 
@@ -31,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(updateWindowAfterSAtatusChanged()));    //if the incoming data processed, update the UI
     connect(selfTestTimer->timer, SIGNAL(timeout()),  this, SLOT(IncreaseProgressBar()));               //control the status bar during self test
     //Plot relative timers
-    plotBattTimer->startTimer(time_interval_plot_ms);
     plotHumidTimer->startTimer(time_interval_plot_ms);
     plotTempTimer->startTimer(time_interval_plot_ms);
     clearTimer->startTimer(time_interval_clear_ms);
@@ -150,6 +150,7 @@ void MainWindow::updatePlotData()
     ui->customPlot->yAxis->setRange(0, 100);
     //Axis label
     ui->customPlot->xAxis->setLabel("time [s]");
+    ui->customPlot->yAxis->setLabel("SOC [%]");
 
 }
 
@@ -167,7 +168,6 @@ void MainWindow::gatherBattData()
             plotData->y_batt[i] = 0;
        }
     }
-    connect(plotBattTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
 }
 
 void MainWindow::gatherTempData()
@@ -211,12 +211,11 @@ void MainWindow::on_buttonBattPlot_clicked()
     initPlotData();
     clearPlotData();
 
-    // give the axes some labels:
-    ui->customPlot->yAxis->setLabel("SOC [%]");
-
     //Call the update function
     connect(plotBattTimer->timer, SIGNAL(timeout()), this, SLOT(gatherBattData()));
-
+    plotBattTimer->startTimer(time_interval_gather_ms);
+    connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
+    plotTimer->startTimer(time_interval_plot_ms);
 }
 
 void MainWindow::on_buttonTempPlot_clicked()

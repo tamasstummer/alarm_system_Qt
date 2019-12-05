@@ -37,6 +37,7 @@ public:
    MyTimer *selfTestTimer = new MyTimer();
 
    MyTimer *sliceTimer = new MyTimer();
+   MyTimer *plotTimer = new MyTimer();
    MyTimer *plotBattTimer = new MyTimer();
    MyTimer *plotHumidTimer = new MyTimer();
    MyTimer *plotTempTimer = new MyTimer();
