@@ -32,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&myAlarm, SIGNAL(updatedDataFormSerial()), this, SLOT(updateWindowAfterSAtatusChanged()));    //if the incoming data processed, update the UI
     connect(selfTestTimer->timer, SIGNAL(timeout()),  this, SLOT(IncreaseProgressBar()));               //control the status bar during self test
     //Plot relative timers
-    plotHumidTimer->startTimer(time_interval_plot_ms);
-    plotTempTimer->startTimer(time_interval_plot_ms);
+    plotBattTimer->startTimer(time_interval_gather_ms);
+    plotTimer->startTimer(time_interval_plot_ms);
     clearTimer->startTimer(time_interval_clear_ms);
 
     progressBarActualValue = 0;
@@ -103,12 +103,26 @@ void MainWindow::clearPlotData()
     //Init the plot area
     QVector<double> x(61);
     QVector<double> y(61);
+
+    //Clear the class related variables
+    for(int i = 0; i <= 60; i++)
+    {
+         plotData->y_batt[i] = 0;
+    }
+
     plotData->index = 0;
-    for(int i =0; i <= 60; i++)
+    plotData->time  = 0;
+
+    //Update the counter with the fresh value
+    ui->lcdPlotTime->display(plotData->time);
+
+    //Clear the plot area
+    for(int i = 0; i <= 60; i++)
     {
         x[i] = i;
         y[i] = 0;
     }
+
     ui->customPlot->graph(0)->setData(x,y);
     ui->customPlot->update();
     ui->customPlot->replot();
@@ -119,12 +133,17 @@ void MainWindow::initPlotData()
     //Init the plot area
     QVector<double> x(61);
     QVector<double> y(61);
+
+    //Init the class related variables
+    plotData->time  = 0;
     plotData->index = 0;
-    for(int i =0; i <= 60; i++)
+
+    for(int i = 0; i <= 60; i++)
     {
         x[i] = i;
         y[i] = 0;
     }
+
     // create graph and assign data to it:
     ui->customPlot->addGraph();
     ui->customPlot->graph(0)->setData(x, y);
@@ -134,8 +153,9 @@ void MainWindow::updatePlotData()
 {
     QVector<double> x(61);
     QVector<double> y(61);
+
     //Fill up the data arrays
-    for(int i=0; i <= 60; i++)
+    for(int i = 0; i <= 60; i++)
     {
         x[i] = i;
         y[i] = plotData->y_batt[i];
@@ -145,9 +165,11 @@ void MainWindow::updatePlotData()
     ui->customPlot->graph(0)->setData(x,y);
     ui->customPlot->update();
     ui->customPlot->replot();
+
     // set axes ranges, so we see all data:
     ui->customPlot->xAxis->setRange(0, 60);
     ui->customPlot->yAxis->setRange(0, 100);
+
     //Axis label
     ui->customPlot->xAxis->setLabel("time [s]");
     ui->customPlot->yAxis->setLabel("SOC [%]");
@@ -156,20 +178,28 @@ void MainWindow::updatePlotData()
 
 void MainWindow::gatherBattData()
 {
+    //Fill the current element of plotData with the freshly gathered battery data
     plotData->y_batt[plotData->index] =  myAlarm.GetBattery();
     plotData->index ++;
 
+    //Delet the data when plot range is over, and reinitialize
     if(plotData->index == 60)
     {
        plotData->index = 0;
        plotData->time++;
+
+       //Display the minute count for current plot
        ui->lcdPlotTime->display(plotData->time);
 
-       for(int i=0; i <= 60; i++)
+       for(int i = 0; i <= 60; i++)
        {
             plotData->y_batt[i] = 0;
        }
     }
+
+    //Overflow portection for the minute counter
+    if(plotData->time >= 99)
+        plotData->time = 0;
 }
 
 void MainWindow::gatherTempData()
@@ -210,16 +240,19 @@ void MainWindow::gatherHumidData()
 
 void MainWindow::on_buttonBattPlot_clicked()
 {
-    //Init the plot and the class related variables
+    //Init the plot and clear ,just to be sure nothing remains
     initPlotData();
     clearPlotData();
-    plotData->time = 0;
 
-    //Call the update function
-    connect(plotBattTimer->timer, SIGNAL(timeout()), this, SLOT(gatherBattData()));
-    plotBattTimer->startTimer(time_interval_gather_ms);
-    connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
-    plotTimer->startTimer(time_interval_plot_ms);
+    //Call gather and update function by timeout (clicking on button agin has protection according to the timers)
+    //timers only connected just for the first click, plotData->firstrun registers the first click
+    if(plotData->firstrun != 1)
+    {
+        connect(plotBattTimer->timer, SIGNAL(timeout()), this, SLOT(gatherBattData()));
+        connect(plotTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
+        //Set the flag which indicates if it is the first run or not
+        plotData->firstrun = 1;
+    }
 }
 
 void MainWindow::on_buttonTempPlot_clicked()
