@@ -13,7 +13,7 @@
 #include "myplot.h"
 
 
-#define time_interval_ms 1000
+#define time_interval_ms 3000
 #define time_interval_plot_ms 1000
 #define time_interval_gather_ms 1000
 #define time_interval_clear_ms 100
@@ -168,7 +168,7 @@ void MainWindow::updatePlotData()
 
     // set axes ranges, so we see all data:
     ui->customPlot->xAxis->setRange(0, 60);
-    ui->customPlot->yAxis->setRange(0, 100);
+    ui->customPlot->yAxis->setRange(0, 10);
 
     //Axis label
     ui->customPlot->xAxis->setLabel("time [s]");
