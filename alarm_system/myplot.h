@@ -16,7 +16,8 @@ public:
     QVector<double> y_humid;
     QVector<double> y_temp;
     int index = 0;
-    MyPlot() : x(11), y_batt(11), y_humid(11), y_temp(11) {}
+    int time = 0;
+    MyPlot() : x(31), y_batt(61), y_humid(11), y_temp(11) {}
 
 public slots:
     void PlotSlot();

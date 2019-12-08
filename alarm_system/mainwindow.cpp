@@ -101,10 +101,10 @@ void MainWindow::updateWindowAfterSAtatusChanged()
 void MainWindow::clearPlotData()
 {
     //Init the plot area
-    QVector<double> x(11);
-    QVector<double> y(11);
+    QVector<double> x(61);
+    QVector<double> y(61);
     plotData->index = 0;
-    for(int i =0; i <= 10; i++)
+    for(int i =0; i <= 60; i++)
     {
         x[i] = i;
         y[i] = 0;
@@ -117,10 +117,10 @@ void MainWindow::clearPlotData()
 void MainWindow::initPlotData()
 {
     //Init the plot area
-    QVector<double> x(11);
-    QVector<double> y(11);
+    QVector<double> x(61);
+    QVector<double> y(61);
     plotData->index = 0;
-    for(int i =0; i <= 10; i++)
+    for(int i =0; i <= 60; i++)
     {
         x[i] = i;
         y[i] = 0;
@@ -132,10 +132,10 @@ void MainWindow::initPlotData()
 
 void MainWindow::updatePlotData()
 {
-    QVector<double> x(11);
-    QVector<double> y(11);
+    QVector<double> x(61);
+    QVector<double> y(61);
     //Fill up the data arrays
-    for(int i=0; i <= 10; i++)
+    for(int i=0; i <= 60; i++)
     {
         x[i] = i;
         y[i] = plotData->y_batt[i];
@@ -146,7 +146,7 @@ void MainWindow::updatePlotData()
     ui->customPlot->update();
     ui->customPlot->replot();
     // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(0, 10);
+    ui->customPlot->xAxis->setRange(0, 60);
     ui->customPlot->yAxis->setRange(0, 100);
     //Axis label
     ui->customPlot->xAxis->setLabel("time [s]");
@@ -159,11 +159,13 @@ void MainWindow::gatherBattData()
     plotData->y_batt[plotData->index] =  myAlarm.GetBattery();
     plotData->index ++;
 
-    if(plotData->index == 10)
+    if(plotData->index == 60)
     {
        plotData->index = 0;
+       plotData->time++;
+       ui->lcdPlotTime->display(plotData->time);
 
-       for(int i=0; i<=10; i++)
+       for(int i=0; i <= 60; i++)
        {
             plotData->y_batt[i] = 0;
        }
@@ -208,8 +210,10 @@ void MainWindow::gatherHumidData()
 
 void MainWindow::on_buttonBattPlot_clicked()
 {
+    //Init the plot and the class related variables
     initPlotData();
     clearPlotData();
+    plotData->time = 0;
 
     //Call the update function
     connect(plotBattTimer->timer, SIGNAL(timeout()), this, SLOT(gatherBattData()));
