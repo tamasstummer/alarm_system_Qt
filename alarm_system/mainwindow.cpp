@@ -175,7 +175,7 @@ void MainWindow::updatePlotData()
 
     // set axes ranges, so we see all data:
     ui->customPlot->xAxis->setRange(0, 60);
-    ui->customPlot->yAxis->setRange(0, 10);
+    ui->customPlot->yAxis->setRange(0, 100);
 
     //Axis label
     ui->customPlot->xAxis->setLabel("time [s]");
@@ -188,7 +188,7 @@ void MainWindow::updatePlotData()
 void MainWindow::gatherBattData()
 {
     //Fill the current element of plotData with the freshly gathered battery data
-    plotData->y_batt[plotData->index] =  myAlarm.GetBattery();
+    plotData->y_batt[plotData->index] =  myAlarm.GetBattery()*100; //in percents
     plotData->index ++;
 
     //Delet the data when plot range is over, and reinitialize
