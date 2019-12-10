@@ -12,7 +12,7 @@ Csapattagok:
 
  ---
 
-Bemutató videó URL-je (max. 5 perc): ...
+Bemutató videó URL-je: https://drive.google.com/open?id=1mwM3Dqup_MyIq07ntDRLRj3FFHCv4aOs
 
 A repository tartalma:
 * Qt applikáció

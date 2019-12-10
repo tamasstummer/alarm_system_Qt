@@ -97,7 +97,9 @@ void MainWindow::updateWindowAfterSAtatusChanged()
     ui->lcdHmidStatus->display(humidAndTemp[0]);
 }
 
-//Plot functions
+/**
+ * @brief Plot functions
+ */
 void MainWindow::clearPlotData()
 {
     //Init the plot area
@@ -127,7 +129,9 @@ void MainWindow::clearPlotData()
     ui->customPlot->update();
     ui->customPlot->replot();
 }
-
+/**
+ * @brief Initialize the plotting area
+ */
 void MainWindow::initPlotData()
 {
     //Init the plot area
@@ -149,6 +153,9 @@ void MainWindow::initPlotData()
     ui->customPlot->graph(0)->setData(x, y);
 }
 
+/**
+ * @brief Update the plotting area
+ */
 void MainWindow::updatePlotData()
 {
     QVector<double> x(61);
@@ -175,7 +182,9 @@ void MainWindow::updatePlotData()
     ui->customPlot->yAxis->setLabel("SOC [%]");
 
 }
-
+/**
+ * @brief gather the battery value from the alarm instace for the plotting functions
+ */
 void MainWindow::gatherBattData()
 {
     //Fill the current element of plotData with the freshly gathered battery data
@@ -202,6 +211,9 @@ void MainWindow::gatherBattData()
         plotData->time = 0;
 }
 
+/**
+ * @brief gather the temperature value from the alarm instace for the plotting functions
+ */
 void MainWindow::gatherTempData()
 {
     QVector<int> HumidityTemperatureTemp    = myAlarm.GetHumidityAndTemperature();
@@ -220,6 +232,9 @@ void MainWindow::gatherTempData()
     connect(plotTempTimer->timer, SIGNAL(timeout()), this, SLOT(updatePlotData()));
 }
 
+/**
+ * @brief gather the humidity value from the alarm instace for the plotting functions
+ */
 void MainWindow::gatherHumidData()
 {
     QVector<int> HumidityTemperatureTemp    = myAlarm.GetHumidityAndTemperature();
