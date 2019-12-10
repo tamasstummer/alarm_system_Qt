@@ -188,7 +188,7 @@ void MainWindow::updatePlotData()
 void MainWindow::gatherBattData()
 {
     //Fill the current element of plotData with the freshly gathered battery data
-    plotData->y_batt[plotData->index] =  myAlarm.GetBattery()*100; //in percents
+    plotData->y_batt[plotData->index] =  myAlarm.GetBattery()*10; //in percents
     plotData->index ++;
 
     //Delet the data when plot range is over, and reinitialize
