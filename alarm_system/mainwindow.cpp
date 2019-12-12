@@ -49,8 +49,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->comboBox_COM_Port->show();
     ui->groupBox_2->setStyleSheet("background-color: #ccdbdb");  // Valami fullos színt kéne állítani
-    QPixmap pm("C:/Users/tamas/Desktop/alkalm_hazi/alkfejl2019-szszs/alarm_system/pictures/closed_padlock.png"); // <- path to image file
-    ui->label_2->setPixmap(pm);
+    //QPixmap pm("C:/Users/tamas/Desktop/alkalm_hazi/alkfejl2019-szszs/alarm_system/pictures/closed_padlock.png"); // <- path to image file
+    //ui->label_2->setPixmap(pm);
     ui->label_2->setScaledContents(true);
     ui->progressBar->setEnabled(false);
 }
@@ -381,8 +381,8 @@ void MainWindow::on_buttonPasswordOK_clicked()
         ui->groupBox->setEnabled(true);
         ui->buttonArmTheSystem->setEnabled(true);
         ui->groupBox_2->setStyleSheet("background-color: #abffad");
-        QPixmap pm("C:/Users/tamas/Desktop/alkalm_hazi/alkfejl2019-szszs/alarm_system/pictures/open_padlock.png"); // <- path to image file
-        ui->label_2->setPixmap(pm);
+       // QPixmap pm("C:/Users/tamas/Desktop/alkalm_hazi/alkfejl2019-szszs/alarm_system/pictures/open_padlock.png"); // <- path to image file
+       // ui->label_2->setPixmap(pm);
         ui->label_2->setScaledContents(true);
         ui->statusWindow->setEnabled(true);
         ui->progressBar->setEnabled(true);
